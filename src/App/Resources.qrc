@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/title/close.png</file>
+        <file>images/title/close_hover.png</file>
+        <file>images/title/close_pressed.png</file>
+        <file>images/title/min.png</file>
+        <file>images/title/min_hover.png</file>
+        <file>images/title/min_pressed.png</file>
+        <file>images/title/skin.png</file>
+        <file>images/title/skin_hover.png</file>
+        <file>images/title/skin_pressed.png</file>
+        <file>images/css/default_style.css</file>
+    </qresource>
+</RCC>

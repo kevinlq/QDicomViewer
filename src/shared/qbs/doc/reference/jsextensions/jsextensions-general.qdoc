@@ -1,0 +1,157 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2015 Petroules Corporation.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of Qbs.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*!
+    \contentspage index.html
+    \page jsextensions-general.html
+    \ingroup list-of-builtin-services
+
+    \title General Services
+    \brief Provides various operations.
+
+    These are operations that do not fit into any of the other categories.
+    They are automatically available in any \QBS project file or JavaScript file.
+
+    \section1 Available Operations
+
+    \section2 require
+    \code
+    require(identifier: string): any
+    \endcode
+    Loads an extension and returns an object representing the extension.
+    If \a identifier is a relative or absolute file path, this function will load a JavaScript file
+    and return an object containing the evaluated context of that file. Otherwise, loads a \QBS
+    extension named \a identifier and returns an object that contains the extension's context.
+    This function is only available in JavaScript files and is designed to behave similarly to the
+    CommonJS/RequireJS/Node.js module resolution systems.
+    \code
+    var MyFunctions = require("./myfunctions.js");
+    MyFunctions.doSomething();
+    var FileInfo = require("qbs.FileInfo");
+    var fileName = FileInfo.fileName(filePath);
+    \endcode
+
+
+    \section1 Extensions to JavaScript Built-in Objects
+
+    \section2 Array.contains
+    \code
+    Array.contains(e: any): boolean
+    \endcode
+    Returns \c{true} if the array contains the element \c{e}. Returns \c{false} otherwise.
+
+    \section2 Array.containsAll
+    \code
+    Array.containsAll(other: any[]): boolean
+    \endcode
+    Returns \c{true} if the array contains every element in the \c{other} array.
+    Returns \c{false} otherwise.
+
+    \section2 Array.containsAny
+    \code
+    Array.containsAny(other: any[]): boolean
+    \endcode
+    Returns \c{true} if the array contains some element(s) in the \c{other} array.
+    Returns \c{false} otherwise.
+
+    \section2 Array.uniqueConcat
+    \code
+    Array.uniqueConcat(other: any[]): any[]
+    \endcode
+    Returns a copy of this array joined with the array \c{other}.
+    Duplicates that would originate from the concatenation are removed.
+    The order of elements is preserved.
+
+    \section2 String.contains
+    \code
+    String.contains(s: string): boolean
+    \endcode
+    Returns \c{true} if the string contains the substring \c{s}. Returns \c{false} otherwise.
+
+    \section2 startsWith
+    \code
+    String.startsWith(s: string): boolean
+    \endcode
+    Returns \c{true} if the string starts with the substring \c{s}. Returns \c{false} otherwise.
+
+    \section2 endsWith
+    \code
+    String.endsWith(s: string): boolean
+    \endcode
+    Returns \c{true} if the string ends with the substring \c{s}. Returns \c{false} otherwise.
+
+
+    \section1 Console API
+
+    \QBS provides a subset of the non-standard Console API available in most ECMAScript runtimes.
+
+    The output of each of these functions will only be displayed if the logging level is at least
+    the level which the function outputs at. Logging levels from lowest to highest are:
+    'error', 'warning', 'info', 'debug', and 'trace'. The default is 'info'.
+
+    \warning The contents of this section are subject to change in order to align with future
+    \l{https://www.w3.org/2011/08/browser-testing-charter.html}{standardization}
+    \l{https://github.com/DeveloperToolsWG/console-object/blob/master/api.md}{processes}.
+
+    \section2 console.debug
+    \code
+    console.debug(s: string): void
+    \endcode
+    This method is an alias for \c{console.log()}.
+
+    \section2 console.error
+    \code
+    console.error(s: string): void
+    \endcode
+    Logs an \c{error} level message.
+    Outputs to stderr when the logger output is a terminal.
+    The string will be prefixed with \c{"ERROR: "} and colored red when the logger output is a
+    color-capable terminal.
+
+    \section2 console.info
+    \code
+    console.info(s: string): void
+    \endcode
+    Logs an \c{info} level message.
+    Outputs to stdout when the logger output is a terminal.
+
+    \section2 console.log
+    \code
+    console.log(s: string): void
+    \endcode
+    Logs a \c{debug} level message.
+    Outputs to stderr when the logger output is a terminal.
+
+    \section2 console.warn
+    \code
+    console.warn(s: string): void
+    \endcode
+    Logs a \c{warning} level message.
+    Outputs to stderr when the logger output is a terminal.
+    The string will be prefixed with \c{"WARNING: "} and colored yellow when the logger output is a
+    color-capable terminal.
+*/

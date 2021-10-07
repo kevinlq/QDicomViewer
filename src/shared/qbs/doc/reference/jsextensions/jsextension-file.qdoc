@@ -1,0 +1,94 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of Qbs.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage index.html
+    \page jsextension-file.html
+    \ingroup list-of-builtin-services
+
+    \title File Service
+    \brief Provides operations on the file system.
+
+    The \c File service offers limited access to the file system for operations such as copying
+    or removing files.
+
+    \section1 Available Operations
+
+    \section2 copy
+    \code
+    File.copy(sourceFilePath: string, targetFilePath: string): boolean
+    \endcode
+    Copies \c sourceFilePath to \c targetFilePath. Any directory components in \c targetFilePath
+    that do not yet exist will be created. If \c sourceFilePath is a directory, a recursive
+    copy will be made. If an error occurs, a JavaScript exception will be thrown.
+    \note \c targetFilePath must be the counterpart of \c sourceFilePath at the new location,
+    \b{not} the new parent directory. This allows the copy to have a different name and is true
+    even if \c sourceFilePath is a directory.
+
+    \section2 exists
+    \code
+    File.exists(filePath: string): boolean
+    \endcode
+    Returns true if and only if there is a file at \c filePath.
+
+    \section2 directoryEntries
+    \code
+    File.directoryEntries(path: string, filter: File.Filter): string[]
+    \endcode
+    Returns a sorted list of the directory \c{path}'s contents non-recursively,
+    filtered by \c filter. The values of \c filter are equivalent to Qt's \c QDir::Filter.
+
+    \section2 lastModified
+    \code
+    File.lastModified(filePath: string): number
+    \endcode
+    Returns the time of last modification for the file at \c filePath. The concrete semantics of the
+    returned value are platform-specific. You should only rely on the property that a smaller value
+    indicates an older timestamp.
+
+    \section2 makePath
+    \code
+    File.makePath(path: string): boolean
+    \endcode
+    Makes the directory at \c path, creating intermediate directories if necessary.
+    Conceptually equivalent to \c{mkdir -p}
+
+    \section2 move
+    \code
+    File.move(oldPath: string, newPath: string, overwrite: boolean = true): boolean
+    \endcode
+    Renames the file \c oldPath to \c newPath.
+    Returns \c true if successful; otherwise returns \c false.
+    If a file with the name \c newPath already exists, and \c overwrite is \c false,
+    \c move() returns \c false (that is, the file will not be overwritten).
+
+    \section2 remove
+    \code
+    File.remove(filePath: string): boolean
+    \endcode
+    Removes the file at \c filePath. In case of a directory, it will be removed recursively.
+*/

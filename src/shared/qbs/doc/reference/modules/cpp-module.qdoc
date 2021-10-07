@@ -1,0 +1,976 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of Qbs.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage index.html
+    \page cpp-module.html
+    \ingroup list-of-modules
+
+    \title Module cpp
+    \since 1.0
+    \brief Provides C/C++ support.
+
+    The \c cpp module contains the properties and rules for toolchains of the C/C++ family.
+    On Apple platforms this includes support for Objective-C/C++.
+
+    \section1 General Properties
+
+    \table
+    \header
+        \li Property
+        \li Type
+        \li Since
+        \li Default
+        \li Description
+    \row
+        \li allowUnresolvedSymbols
+        \li \c{bool}
+        \li 1.2
+        \li \c{false}
+        \li Switch this on if you want the linking step to succeed even if the resulting binary
+            contains unresolved symbols. Normally this makes little sense, but in special cases it
+            is possible that the respective symbols will be available at load time even if they are
+            not present during linking.
+    \row
+        \li architecture
+        \li \c{string}
+        \li 1.0
+        \li \c{qbs.architecture}
+        \li Target architecture. See \c{qbs.architecture}.
+    \row
+        \li endianness
+        \li \c{string}
+        \li 1.9
+        \li Specifies the endianness of the target platform's processor architecture
+            (\c{"big"} or \c{"little"}). The value is automatically detected from the
+            compiler's defaults, but can also be manually set in order to select a specific
+            endianness when targeting bi-endian architectures like MIPS and PowerPC.
+    \row
+        \li debugInformation
+        \li \c{bool}
+        \li 1.0
+        \li \c{qbs.debugInformation}
+        \li Generate debug information. See \c{qbs.debugInformation}.
+    \row
+        \li combineCSources
+        \li \c{bool}
+        \li 1.8
+        \li \c{false}
+        \li Enabling this property on a product instructs the \l{FileTagger Item}{file tagger}
+            to attach the tag \c{"c.combine"} to C sources, rather than \c{"c"}.
+            As a result, all C sources of the product will be combined into a single file which
+            is then compiled. This can speed up initial compilation significantly, but is
+            of course detrimental in the context of incremental builds. Also, perfectly legal code
+            may fail to compile with this option due to the merging of translation units.
+            If you want to enable this property in a product that has some sources which
+            cannot be merged, you need to put these into a dedicated \l{Group Item}{group} and
+            set their file tag to \c{"c"}, overriding the file tagger.
+            \note Module properties set on specific source files (that is, at the Group level)
+                  will not be taken into account when building the combined file. You either need
+                  to set these properties at the product level instead or prevent the respective
+                  files from getting combined via the mechanism described above.
+    \row
+        \li combineCxxSources
+        \li \c{bool}
+        \li 1.8
+        \li \c{false}
+        \li Like \c combineCSources, but for C++. The relevant file tags are \c{"cpp"}
+            and \c{"cpp.combine"}.
+    \row
+        \li combineObjcSources
+        \li \c{bool}
+        \li 1.8
+        \li \c{false}
+        \li Like \c combineCSources, but for Objective-C. The relevant file tags are \c{"objc"}
+            and \c{"objc.combine"}.
+    \row
+        \li combineObjcxxSources
+        \li \c{bool}
+        \li 1.8
+        \li \c{false}
+        \li Like \c combineCSources, but for Objective-C++. The relevant file tags are \c{"objcpp"}
+            and \c{"objcpp.combine"}.
+    \row
+        \li separateDebugInformation
+        \li \c{bool}
+        \li 1.4
+        \li \c{false} for gcc/clang, \c{true} for MSVC
+        \li Whether to store debug information in an external file or bundle instead of within the
+            binary.
+    \row
+        \li defines
+        \li \c{stringList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of preprocessor macros that gets passed to the compiler.
+            To set macro values use the following syntax:
+            \c{cpp.defines: ["USE_COLORS=1", 'COLOR_STR="blanched almond"']}
+    \row
+        \li platformDefines
+        \li \c{stringList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of preprocessor macros that are used for all projects that are built for the
+            current target platform. User project files usually do not set this property.
+    \row
+        \li includePaths
+        \li \c{pathList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of include paths. Relative paths are considered to be relative to the .qbs product
+            file they are used in.
+    \row
+        \li systemIncludePaths
+        \li \c{pathList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of include paths that are passed as system include paths to the compiler.
+            For header files in those paths warnings will be ignored.
+            Relative paths are considered to be relative to the .qbs product file they are used in.
+    \row
+        \li systemRunPaths
+        \li \c{stringList}
+        \li 1.6
+        \li Auto-detected for host builds on Linux via \c ldconfig, \c{["/lib", "/usr/lib"]}
+            otherwise on Unix, empty on Windows
+        \li The paths the dynamic linker uses on process start-up to locate dynamic libraries.
+    \row
+        \li libraryPaths
+        \li \c{pathList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of library search paths. Relative paths are considered to be relative to the .qbs
+            product file they are used in.
+    \row
+        \li dynamicLibraries
+        \li \c{stringList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of dynamic libraries to be linked. If the library is part of your project, consider
+            using a Depends item instead.
+    \row
+        \li staticLibraries
+        \li \c{stringList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of static libraries to be linked. If the library is part of your project, consider
+            using a Depends item instead.
+    \row
+        \li prefixHeaders
+        \li \c{pathList}
+        \li 1.0.1
+        \li \c{undefined}
+        \li List of files to automatically include at the beginning of each source file in the
+            product.
+    \row
+        \li optimization
+        \li \c{string}
+        \li 1.0
+        \li \c{qbs.optimization}
+        \li Optimization level. See \c{qbs.optimization}.
+    \row
+        \li treatWarningsAsErrors
+        \li \c{bool}
+        \li 1.0
+        \li \c{false}
+        \li Warnings will be handled as errors and cause the build to fail.
+    \row
+        \li useCPrecompiledHeader, useCxxPrecompiledHeader, useObjcPrecompiledHeader,
+            useObjcxxPrecompiledHeader
+        \li \c bool
+        \li 1.5
+        \li \c true
+        \li Specifies whether to use a precompiled header for the respective language, if one
+            is present (see \l{Relevant File Tags}{below} for the associated file tags).
+    \row
+        \li warningLevel
+        \li \c{string}
+        \li 1.0
+        \li \c{"all"}
+        \li Specifies the warning level for the compiler - \c{"none"} or \c{"all"}.
+    \row
+        \li driverFlags
+        \li \c{stringList}
+        \li 1.6
+        \li undefined
+        \li Flags that are added to all compilation and linking commands performed by the compiler
+            driver, independently of the language.
+    \row
+        \li commonCompilerFlags
+        \li \c{stringList}
+        \li 1.0.1
+        \li undefined
+        \li Flags that are added to all compilation commands independently of the language.
+    \row
+        \li compilerVersionMajor
+        \li \c{int}
+        \li 1.4
+        \li undefined
+        \li The major version of the compiler.
+    \row
+        \li compilerVersionMinor
+        \li \c{int}
+        \li 1.4
+        \li undefined
+        \li The minor version of the compiler.
+    \row
+        \li compilerVersionPatch
+        \li \c{int}
+        \li 1.4
+        \li undefined
+        \li The patch level component of the compiler version.
+    \row
+        \li assemblerFlags
+        \li \c{stringList}
+        \li 1.5
+        \li undefined
+        \li Additional flags for the assembler.
+    \row
+        \li cppFlags
+        \li \c{stringList}
+        \li 1.0
+        \li undefined
+        \li Additional flags for the C preprocessor.
+    \row
+        \li cFlags
+        \li \c{stringList}
+        \li 1.0
+        \li undefined
+        \li Additional flags for the C compiler.
+    \row
+        \li cxxFlags
+        \li \c{stringList}
+        \li 1.0
+        \li undefined
+        \li Additional flags for the C++ compiler.
+    \row
+        \li cLanguageVersion
+        \li \c{string}
+        \li 1.4
+        \li undefined
+        \li The version of the C standard with which the code must comply. If this property is set,
+            corresponding compiler and/or linker flags will be added, depending on the toolchain.
+            If the value is left undefined, the compiler default will be used.
+            Possible values include: \c{"c89"}, \c{"c99"}, \c{"c11"}
+    \row
+        \li cxxLanguageVersion
+        \li \c{string}
+        \li 1.4
+        \li undefined
+        \li The version of the C++ standard with which the code must comply. If this property is
+            set, corresponding compiler and/or linker flags will be added, depending on the
+            toolchain. If the value is left undefined, the compiler default will be used.
+            Possible values include: \c{"c++98"}, \c{"c++11"}, \c{"c++14"}
+    \row
+        \li cxxStandardLibrary
+        \li \c{string}
+        \li 1.4
+        \li undefined
+        \li The C++ standard library to link to. If this property is set, corresponding compiler
+            and/or linker flags will be added, assuming the value is valid for the current
+            toolchain. If the value is left undefined, the compiler default will be used.
+            Possible values include: \c{"libstdc++"}, \c{"libc++"}
+    \row
+        \li objcFlags
+        \li \c{stringList}
+        \li 1.0
+        \li undefined
+        \li Additional flags for the Objective-C compiler.
+    \row
+        \li objcxxFlags
+        \li \c{stringList}
+        \li 1.0
+        \li undefined
+        \li Additional flags for the Objective-C++ compiler.
+    \row
+        \li linkerFlags
+        \li \c{stringList}
+        \li 1.0
+        \li undefined
+        \li Additional flags for the linker. These flags should \e not be escaped using the -Wl or
+            -Xlinker syntaxes, as \QBS will do this automatically based on the linker being used.
+            See cpp.linkerMode for additional information.
+    \row
+        \li assemblerName
+        \li \c{string}
+        \li 1.5
+        \li determined by qbs-setup-toolchains
+        \li Name of the assembler binary. This is set in the build profile.
+    \row
+        \li assemblerPath
+        \li \c{string}
+        \li 1.5
+        \li determined by qbs-setup-toolchains
+        \li Full path of the assembler binary. This is set in the build profile.
+    \row
+        \li compilerName
+        \li \c{string}
+        \li 1.0
+        \li determined by qbs-setup-toolchains
+        \li Name of the main compiler binary. This is set in the build profile.
+    \row
+        \li compilerPath
+        \li \c{string}
+        \li 1.0
+        \li determined by qbs-setup-toolchains
+        \li Full path of the main compiler binary. This is set in the build profile.
+            If the toolchain provides different compilers for different languages, then
+            \c{compilerPathByLanguage} is used.
+    \row
+        \li compilerPathByLanguage
+        \li \c{string} to \c{string} map
+        \li 1.3
+        \li determined by qbs-setup-toolchains
+        \li Maps file tags to full paths of compiler binaries. This is set in the build profile.
+    \row
+        \li compilerWrapper
+        \li \c{stringList}
+        \li 1.1
+        \li \c{undefined}
+        \li Wrapper binary and its arguments for wrapping compiler calls.
+            This is useful for compiler wrappers like ccache and alike.
+    \row
+        \li linkerName
+        \li \c{string}
+        \li 1.1.1
+        \li determined by qbs-setup-toolchains
+        \li Name of the linker binary. This is set in the build profile.
+    \row
+        \li linkerPath
+        \li \c{string}
+        \li 1.1.1
+        \li determined by qbs-setup-toolchains
+        \li Full path of the linker binary. This is set in the build profile.
+    \row
+        \li linkerWrapper
+        \li \c{stringList}
+        \li 1.6.2
+        \li \c{undefined}
+        \li Wrapper binary and its arguments for wrapping linker calls.
+            This is useful for linker wrappers as needed by Bullseye Coverage, for example.
+    \row
+        \li entryPoint
+        \li \c{string}
+        \li 1.3
+        \li \c{undefined}
+        \li Name of the entry point of an executable or dynamic library. If this property is
+            undefined, the toolchain's default is used.
+    \row
+        \li runtimeLibrary
+        \li \c{string}
+        \li 1.3.3
+        \li \c{"dynamic"} for MSVC, \c{undefined} for others
+        \li Type of the used runtime library. Accepted values are \c{"static"} and \c{"dynamic"}.
+            If this property is set to \c{undefined}, then the default runtime library of the
+            toolchain is used.
+            \note For MSVC the default value is \c{"dynamic"}.
+            \note At the moment this property is only functional for MSVC.
+    \row
+        \li enableExceptions
+        \li \c{bool}
+        \li 1.5
+        \li \c{true}
+        \li Whether to enable exceptions in C++ code.
+    \row
+        \li exceptionHandlingModel
+        \li \c{string}
+        \li 1.5
+        \li \c{"default"}
+        \li The exception handling model to use. For MSVC, this can be \c{"default"}, \c{"seh"} or
+            \c{"externc"}. For all other compilers, \c{"default"} indicates the default or only
+            exception handling model.
+    \row
+        \li enableRtti
+        \li \c{bool}
+        \li 1.5
+        \li \c{undefined}
+        \li Whether to enable runtime type information in C++ code.
+    \row
+        \li enableReproducibleBuilds
+        \li \c{bool}
+        \li 1.5
+        \li \c{false}
+        \li Try to generate reproducible object files. Some compilers (notably gcc) use random
+            numbers for generating symbol names that have to be different in every compilation
+            unit. This is avoided by setting this property to \c{true}.
+    \row
+        \li treatSystemHeadersAsDependencies
+        \li \c{bool}
+        \li 1.8
+        \li \c{false}
+        \li If this property is enabled, then included header files found via
+            \c systemIncludePaths, \c distributionIncludePaths or \c compilerIncludePaths
+            will be added to the dependencies of the respective object file. This means that
+            modification of such header files (or any of the headers they include) will cause
+            recompilation.
+    \endtable
+
+    \section1 Properties Specific to Apple Platforms
+
+    \table
+    \header
+        \li Property
+        \li Type
+        \li Since
+        \li Default
+        \li Description
+    \row
+        \li dsymutilFlags
+        \li \c{stringList}
+        \li 1.4.1
+        \li undefined
+        \li Additional flags for the dsymutil tool.
+    \row
+        \li dsymutilPath
+        \li \c{string}
+        \li 1.4
+        \li determined by qbs-setup-toolchains
+        \li Full path of the dsymutil binary. This is set in the build profile.
+    \row
+        \li lipoPath
+        \li \c{string}
+        \li 1.9
+        \li determined automatically
+        \li Full path of the lipo binary.
+    \row
+        \li frameworkPaths
+        \li \c{pathList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of framework search paths. Relative paths are considered to be relative to the
+            .qbs product file they are used in.
+    \row
+        \li systemFrameworkPaths
+        \li \c{pathList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of framework search paths. Relative paths are considered to be relative to the
+            .qbs product file they are used in. Header files in frameworks in those paths will not
+            cause warnings.
+    \row
+        \li frameworks
+        \li \c{stringList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of frameworks to be linked.
+            If the framework is part of your project, consider using a Depends item instead.
+    \row
+        \li weakFrameworks
+        \li \c{stringList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of frameworks to be weakly linked.
+            If the framework is part of your project, consider using a Depends item instead.
+    \row
+        \li automaticReferenceCounting
+        \li \c{bool}
+        \li 1.4
+        \li \c{undefined}
+        \li Whether to enable Automatic Reference Counting (ARC) for Objective-C and Objective-C++
+            source code. If \c{undefined}, uses the compiler default (probably \c{false}).
+    \row
+        \li requireAppExtensionSafeApi
+        \li \c{bool}
+        \li 1.4
+        \li \c{undefined}
+        \li Whether to enforce the use of only app-extension-safe APIs on Apple platforms. This is
+            necessary for building Application Extensions in OS X Yosemite and iOS 8 and above. If
+            \c{undefined}, uses the compiler and linker defaults (probably \c{false}).
+    \row
+        \li minimumIosVersion
+        \li \c{string}
+        \li 1.0
+        \li undefined, but may be set by generated profiles
+        \li A version number in the format [major].[minor] indicating the earliest version of iOS
+            that the product should run on. Passes -miphoneos-version-min=<version> to the compiler.
+            If undefined, compiler defaults will be used.
+    \row
+        \li minimumOsxVersion
+        \li \c{string}
+        \li 1.0.1
+        \li undefined, but may be set by generated profiles
+        \li Deprecated in \QBS 1.5.2. Use \c minimumMacosVersion instead.
+    \row
+        \li minimumMacosVersion
+        \li \c{string}
+        \li 1.5.2
+        \li undefined, but may be set by generated profiles
+        \li A version number in the format [major].[minor] indicating the earliest version of macOS
+            that the product should run on. Passes -mmacosx-version-min=<version> to the compiler.
+            If undefined, compiler defaults will be used.
+    \row
+        \li minimumWatchosVersion
+        \li \c{string}
+        \li 1.5
+        \li undefined, but may be set by generated profiles
+        \li A version number in the format [major].[minor] indicating the earliest version of
+            Apple watchOS that the product should run on.
+            If undefined, compiler defaults will be used.
+    \row
+        \li minimumTvosVersion
+        \li \c{string}
+        \li 1.5
+        \li undefined, but may be set by generated profiles
+        \li A version number in the format [major].[minor] indicating the earliest version of
+            Apple tvOS that the product should run on.
+            If undefined, compiler defaults will be used.
+    \endtable
+
+    \section1 Properties Specific to Unix Platforms
+
+    \table
+    \header
+        \li Property
+        \li Type
+        \li Since
+        \li Default
+        \li Description
+    \row
+        \li archiverName
+        \li \c{string}
+        \li 1.0
+        \li \c{"ar"}
+        \li Name of the archiver binary. This is set in the build profile.
+    \row
+        \li archiverPath
+        \li \c{string}
+        \li 1.0
+        \li determined by qbs-setup-toolchains
+        \li Full path of the archiver binary. This is set in the build profile.
+    \row
+        \li exportedSymbolsCheckMode
+        \li \c{string}
+        \li 1.4.1
+        \li "ignore-undefined"
+        \li Controls how \QBS determines whether an updated dynamic library causes relinking of
+            dependents. The default value is \c "ignore-undefined", which means that undefined
+            symbols being added or removed do not cause any relinking. If that should happen, for
+            example because dependent products are linked with an option such as
+            \c "--no-undefined", then this property can be set to \c "strict".
+    \row
+        \li linkerMode
+        \li \c{string}
+        \li 1.6
+        \li "automatic"
+        \li Controls whether to automatically use an appropriate compiler frontend in place of the
+            system linker when linking binaries. The default is \c{"automatic"}, which chooses
+            either the C++ compiler, C compiler, or system linker specified by the \c{linkerName}
+            and \c{linkerPath} properties, depending on the type of object files present on the
+            linker command line. \c{"manual"} allows you to explicitly specify the linker using the
+            \c{linkerName} and \c{linkerPath} properties.
+    \row
+        \li nmName
+        \li \c{string}
+        \li 1.2
+        \li \c{"nm"}
+        \li Name of the nm binary. This is set in the build profile.
+    \row
+        \li nmPath
+        \li \c{string}
+        \li 1.2
+        \li determined by qbs-setup-toolchains
+        \li Full path of the nm binary. This is set in the build profile.
+    \row
+        \li objcopyName
+        \li \c{string}
+        \li 1.4
+        \li \c{"objcopy"}
+        \li Name of the objcopy binary. This is set in the build profile.
+    \row
+        \li objcopyPath
+        \li \c{string}
+        \li 1.4
+        \li determined by qbs-setup-toolchains
+        \li Full path of the objcopy binary. This is set in the build profile.
+    \row
+        \li stripName
+        \li \c{string}
+        \li 1.4
+        \li \c{"strip"}
+        \li Name of the strip binary. This is set in the build profile.
+    \row
+        \li stripPath
+        \li \c{string}
+        \li 1.4
+        \li determined by qbs-setup-toolchains
+        \li Full path of the strip binary. This is set in the build profile.
+    \row
+        \li positionIndependentCode
+        \li \c{bool}
+        \li 1.0
+        \li \c{undefined}
+        \li Generate position independent code.
+            If this property is \c{undefined}, then position independent code is generated for
+            libraries, but not for applications.
+    \row
+        \li rpaths
+        \li \c{stringList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of rpaths that are passed to the linker. Paths that also appear in
+            \c systemRunPaths are ignored.
+    \row
+        \li sonamePrefix
+        \li \c{string}
+        \li 1.5
+        \li \c{undefined}
+        \li If defined, the value of this variable is used as a path to be prepended to
+            the built shared library's \c SONAME identifier. The \c SONAME
+            (\c LC_ID_DYLIB on Apple platforms, \c DT_SONAME on other Unix-like platforms) is the
+            identifier that the dynamic linker will later use to reference the library.
+            In general, this reference may be a library name or full library path.
+
+            On Apple platforms, the path may contain the following placeholders:
+
+            \list
+                \li \b @rpath -
+                    Expands to paths defined by LC_RPATH Mach-O commands in
+                    the current process executable or the referring libraries.
+                \li \b @executable_path -
+                    Expands to the current process executable location.
+                \li \b @loader_path -
+                    Expands to the referring executable or library location.
+            \endlist
+
+            In most cases, using \c @rpath is sufficient and recommended.
+            However, the prefix may be also specified using different placeholders, or
+            an absolute path.
+
+            For more information, see the
+            \l{https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/dyld.1.html}{dyld documentation}
+            on dynamic library install names.
+    \row
+        \li soVersion
+        \li \c{string}
+        \li 1.7
+        \li Major part of \c{product.version} if a version is set, otherwise the empty string
+        \li The version to be appended to the soname in ELF shared libraries.
+    \row
+        \li useRPaths
+        \li \c{bool}
+        \li 1.3
+        \li \c{true}
+        \li Set this property to \c{false} to prevent the linker from writing rpaths to the binary.
+    \row
+        \li useRPathLink
+        \li \c{bool}
+        \li 1.8
+        \li \c{true} on non-Darwin Unix platforms or when targeting macOS 10.4.x and older.
+        \li Use the \c{-rpath-link} linker option for transitive shared objects.
+    \row
+        \li visibility
+        \li \c{string}
+        \li 1.0
+        \li \c{"default"}
+        \li Visibility level for exported symbols.
+            Possible values include: \c{"default"}, \c{"hidden"}, \c{"hiddenInlines"},
+            and \c{"minimal"}, which combines \c{"hidden"} and \c{"hiddenInlines"}.
+    \endtable
+
+    \section1 Properties Specific to Windows
+
+    \table
+    \header
+        \li Property
+        \li Type
+        \li Since
+        \li Default
+        \li Description
+    \row
+        \li generateManifestFile
+        \li \c{bool}
+        \li 1.5.0
+        \li \c{true}
+        \li Specifies whether to auto-generate a manifest file and include it in the binary.
+            Disable this property if you provide your own rc file.
+    \row
+        \li windowsApiCharacterSet
+        \li \c{string}
+        \li 1.0.1
+        \li \c{"unicode"}
+        \li Specifies the character set used in the Win32 API. "unicode" will define the
+            preprocessor symbols UNICODE and _UNICODE, "mbcs" will define _MBCS, and
+            setting the value to undefined will use the default character set.
+    \row
+        \li minimumWindowsVersion
+        \li \c{string}
+        \li 1.0
+        \li undefined, but may be set by generated profiles
+        \li A version number in the format [major].[minor] indicating the earliest version of
+            Windows that the product should run on. Defines WINVER, _WIN32_WINNT, and
+            _WIN32_WINDOWS, and applies a version number to the linker flags /SUBSYSTEM and
+            /OSVERSION for MSVC or --major-subsystem-version, --minor-subsystem-version,
+            --major-os-version and --minor-os-version for MinGW.
+            If undefined, compiler defaults will be used.
+    \endtable
+
+    \section1 Advanced Properties
+
+    \table
+    \header
+        \li Property
+        \li Type
+        \li Since
+        \li Default
+        \li Description
+    \row
+        \li alwaysUseLipo
+        \li \{bool}
+        \li 1.9
+        \li \c{false}
+        \li Whether to always use lipo when combining Mach-O output files on Apple platforms,
+            even if there is only one CPU architecture. The should not normally need to be changed.
+    \row
+        \li compilerDefines
+        \li \c{stringList}
+        \li 1.0
+        \li \c{undefined}
+        \li List of preprocessor macros that are used for all projects that are using the current
+            toolchain. User project files usually do not set this property.
+    \row
+        \li compilerIncludePaths
+        \li \c{pathList}
+        \li 1.6
+        \li determined automatically
+        \li List of #include search paths that are used for all projects that are using the current
+            toolchain. Determined automatically by probing the compiler.
+            User project files usually do not set this property.
+    \row
+        \li compilerFrameworkPaths
+        \li \c{pathList}
+        \li 1.6
+        \li determined automatically
+        \li List of framework search paths that are used for all projects that are using the current
+            toolchain. Determined automatically by probing the compiler.
+            User project files usually do not set this property.
+    \row
+        \li compilerLibraryPaths
+        \li \c{pathList}
+        \li 1.6
+        \li determined automatically
+        \li List of library search paths that are used for all projects that are using the current
+            toolchain. Determined automatically by probing the compiler.
+            User project files usually do not set this property.
+    \row
+        \li distributionFrameworkPaths
+        \li \c{pathList}
+        \li 1.8
+        \li \c{undefined}
+        \li List of distribution-specific framework search paths, prioritized after \c{systemFrameworkPaths}.
+            Intended for use by module authors implementing support for new operating systems/distributions.
+            User project files should not set this property.
+    \row
+        \li distributionIncludePaths
+        \li \c{pathList}
+        \li 1.8
+        \li \c{undefined}
+        \li List of distribution-specific include paths that are passed as system include paths to the compiler,
+            prioritized after \c{systemIncludePaths}.
+            Intended for use by module authors implementing support for new operating systems/distributions.
+            User project files should not set this property.
+    \row
+        \li distributionLibraryPaths
+        \li \c{pathList}
+        \li 1.8
+        \li \c{undefined}
+        \li List of distribution-specific library search paths, prioritized after \c{systemLibraryPaths}.
+            Intended for use by module authors implementing support for new operating systems/distributions.
+            User project files should not set this property.
+    \endtable
+
+
+    \section1 Dependency Parameters
+
+    \table
+    \header
+        \li Parameter
+        \li Type
+        \li Since
+        \li Default
+        \li Description
+    \row
+        \li \c{link}
+        \li \c{bool}
+        \li 1.9
+        \li undefined
+        \li If \c{false}, the dependency will not be linked, even if
+            it is a valid input for a linker rule. This property
+            affects library dependencies only.
+    \row
+        \li \c{linkWholeArchive}
+        \li \c{bool}
+        \li 1.9
+        \li undefined
+        \li If \c{true}, then if the dependency is a static library, all of its objects
+            will be pulled into target binary, even if their symbols do not appear to be used.
+            This parameter is mainly useful when creating a dynamic library from static libraries.
+    \row
+        \li \c{symbolLinkMode}
+        \li \c{string}
+        \li 1.9
+        \li undefined
+        \li Attribute specifying how the library or framework will be linked.
+            May contain the values: "weak", "lazy", "reexport", and "upward"; refer to the Apple
+            ld64 man page for full details. \c{undefined} uses normal linking.
+            Currently only applies when linking for Apple platforms.
+    \endtable
+
+    \section1 Relevant File Tags
+
+    \table
+    \header
+        \li Tag
+        \li Auto-tagged File Names
+        \li Since
+        \li Description
+    \row
+        \li \c{"application"}
+        \li n/a
+        \li 1.0.1
+        \li The rule that creates executable files (typically via a linker) attaches this tag
+            to its output artifact.
+    \row
+        \li \c{"asm"}
+        \li \c{*.s} (for GCC-like toolchains), \c{*.asm} (for MSVC)
+        \li 1.1.0
+        \li Source files with this tag serve as inputs to a rule invoking the toolchain's
+            assembler. One object file is generated for each such file.
+    \row
+        \li \c{"asm_cpp"}
+        \li \c{*.S}, \c{*.sx}
+        \li 1.1.0
+        \li Like \c{"asm"}, but for source files that need preprocessing. This tag only has an
+            effect with GCC-like toolchains.
+    \row
+        \li \c{"c"}
+        \li \c{*.c} (if \c combineCSources is not enabled)
+        \li 1.0.1
+        \li Source files with this tag serve as inputs to a rule invoking the toolchain's
+            C compiler. One object file is generated for each such file.
+    \row
+        \li \c{"c.combine"}
+        \li \c{*.c} (if \c combineCSources is enabled)
+        \li 1.8
+        \li Source files with this tag serve as inputs to a rule combining them into
+            a single C file, which will then be compiled.
+    \row
+        \li \c{"cpp"}
+        \li \c{*.C}, \c{*.cpp}, \c{*.cxx}, \c{*.c++}, \c{*.cc}
+            (if \c combineCxxSources is not enabled)
+        \li 1.0.1
+        \li Source files with this tag serve as inputs to a rule invoking the toolchain's
+            C++ compiler. One object file is generated for each such file.
+    \row
+        \li \c{"cpp.combine"}
+        \li \c{*.C}, \c{*.cpp}, \c{*.cxx}, \c{*.c++}, \c{*.cc}
+            (if \c combineCxxSources is enabled)
+        \li 1.8
+        \li Source files with this tag serve as inputs to a rule combining them into
+            a single C++ file, which will then be compiled.
+    \row
+        \li \c{"c_pch_src"}, \c{"cpp_pch_src"}, \c{"objc_pch_src"}, \c{"objcpp_pch_src"}
+        \li -
+        \li 1.5
+        \li Files with this tag will be turned into precompiled headers for C, C++, Objective-C
+            and Objective-C++, respectively. There can be only one such file per product and
+            language.
+    \row
+        \li \c{"dynamiclibrary"}
+        \li n/a
+        \li 1.0.1
+        \li The rule that creates dynamic libraries (typically via a linker) attaches this tag
+            to its output artifact.
+    \row
+        \li \c{"hpp"}
+        \li \c{*.h}, \c{*.H}, \c{*.hpp}, \c{*.hxx}, \c{*.h++}
+        \li 1.0.1
+        \li This tag is used for header files (C, C++, Objective-C and Objective-C++). No rule
+            in this module generates output artifacts from such files directly, but the compiler
+            rule will have a dependency on all rules that create such files.
+    \row
+        \li \c{"linkerscript"}
+        \li -
+        \li 1.5.0
+        \li This tag is used for \c ld linker scripts. You can provide such a file if you need
+            to replace the default linker script.
+            This file tag only has an effect with GCC-like toolchains. The linker needs to be
+            \c{ld}-compatible.
+    \row
+        \li \c{"obj"}
+        \li n/a
+        \li 1.0.1
+        \li The rule that creates object files (typically via a compiler) attaches this tag
+            to its output artifacts. Such files are usually intermediate artifacts of the build
+            process and rarely need to be referenced in project files.
+    \row
+        \li \c{"objc"}
+        \li \c{*.m} (if \c combineObjcSources is not enabled)
+        \li 1.1.0
+        \li Source files with this tag serve as inputs to a rule invoking the toolchain's
+            Objective-C compiler. One object file is generated for each such file.
+    \row
+        \li \c{"objc.combine"}
+        \li \c{*.m} (if \c combineObjcSources is enabled)
+        \li 1.8
+        \li Source files with this tag serve as inputs to a rule combining them into
+            a single Objective-C file, which will then be compiled.
+    \row
+        \li \c{"objcpp"}
+        \li \c{*.mm} (if \c combineObjcxxSources is not enabled)
+        \li 1.1.0
+        \li Source files with this tag serve as inputs to a rule invoking the toolchain's
+            Objective-C++ compiler. One object file is generated for each such file.
+    \row
+        \li \c{"objcpp.combine"}
+        \li \c{*.mm} (if \c combineObjcxxSources is enabled)
+        \li 1.8
+        \li Source files with this tag serve as inputs to a rule combining them into
+            a single Objective-C++ file, which will then be compiled.
+    \row
+        \li \c{"rc"}
+        \li \c{*.rc}
+        \li 1.1.0
+        \li Files with this tag serve as inputs to the Windows resource compiler. One object file
+            is generated for each such file. The tag has no effect on target platforms other than
+            Windows.
+    \row
+        \li \c{"staticlibrary"}
+        \li n/a
+        \li 1.0.1
+        \li The rule that creates static libraries (typically via a linker) attaches this tag
+            to its output artifact.
+    \row
+        \li \c{"versionscript"}
+        \li -
+        \li 1.5.0
+        \li This tag is used for \c ld linker scripts. You can provide such a file if you need
+            fine-grained control over the symbols present in a shared library.
+            This file tag only has an effect with GCC-like toolchains. The linker needs to be
+            \c{ld}-compatible.
+    \endtable
+
+*/

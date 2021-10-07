@@ -1,0 +1,175 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of Qbs.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage index.html
+    \page jsextension-process.html
+    \ingroup list-of-builtin-services
+
+    \title Process Service
+    \brief Allows you to start external processes.
+
+    The \c Process service allows you to start processes, track their output,
+    and so on.
+
+    \section1 Available Operations
+
+    \section2 Constructor
+    \code
+    Process()
+    \endcode
+    Allocates and returns a new Process object.
+
+    \section2 close
+    \code
+    close(): void
+    \endcode
+    Frees the resources associated with the process. It is recommended to always call this function as
+    soon as you are finished with the process.
+
+    \section2 closeWriteChannel
+    \code
+    closeWriteChannel(): void
+    \endcode
+    Schedules the stdin channel of process to be closed. The channel will close once all data has been
+    written to the process. After calling this function, any attempts to write to the process will do
+    nothing. See \c QProcess::closeWriteChannel() for more details.
+
+    \section2 exec
+    \code
+    exec(filePath: string, arguments: string[], throwOnError: boolean): number
+    \endcode
+    Executes the program at \c filePath with the given argument list and blocks until the
+    process is finished. If an error occurs (for example, there is no executable
+    file at \c filePath)
+    and \c throwOnError is true, then a JavaScript exception will be thrown. Otherwise
+    (the default), -1 will be returned in case of an error. The normal return code is the exit code
+    of the process.
+
+    \section2 exitCode
+    \code
+    exitCode(): number
+    \endcode
+    Returns the exit code of the process. This is needed for retrieving the exit code from
+    processes started via \c start(), rather than \c exec().
+
+    \section2 getEnv
+    \code
+    getEnv(varName: string): string
+    \endcode
+    Returns the value of the variable \c varName in the process' environment.
+
+    \section2 kill
+    \code
+    kill(): void
+    \endcode
+    Kills the process, causing it to exit immediately.
+
+    \section2 readLine
+    \code
+    readLine(): string
+    \endcode
+    Reads and returns one line of text from the process output, without the newline character(s).
+
+    \section2 readStdErr
+    \code
+    readStdErr(): string
+    \endcode
+    Reads and returns all data from the process' standard error channel.
+
+    \section2 readStdOut
+    \code
+    readStdOut(): string
+    \endcode
+    Reads and returns all data from the process' standard output channel.
+
+    \section2 setCodec
+    \code
+    setCodec(codec)
+    \endcode
+    Sets the text codec to \c codec. The codec is used for reading and writing from and to
+    the process, respectively. The supported codecs are the same as for \c QTextCodec, for example:
+    "UTF-8", "UTF-16", and "ISO 8859-1".
+
+    \section2 setEnv
+    \code
+    setEnv(varName: string, varValue: string): string
+    \endcode
+    Sets the value of variable \c varName to \c varValue in the process environment.
+    This only has an effect if called before the process is started.
+
+    \section2 setWorkingDirectory
+    \code
+    setWorkingDirectory(path: string): void
+    \endcode
+    Sets the directory the process will be started in.
+    This only has an effect if called before the process is started.
+
+    \section2 start
+    \code
+    start(filePath: string, arguments: string[]): boolean
+    \endcode
+    Starts the program at \c filePath with the given list of arguments. Returns \c{true} if the
+    process could be started and \c{false} otherwise.
+    \note This call returns right after starting the process and should be used only if you need
+    to interact with the process while it is running. Most of the time, you want to use \c exec()
+    instead.
+
+    \section2 terminate
+    \code
+    terminate(): void
+    \endcode
+    Tries to terminate the process. This is not guaranteed to make the process exit immediately;
+    if you need that, use \c kill().
+
+    \section2 waitForFinished
+    \code
+    waitForFinished(timeout: number): boolean
+    \endcode
+    Blocks until the process has finished or \c timeout milliseconds have passed (default is 30000).
+    Returns true if the process has finished and false if the operation has timed out.
+    Calling this function only makes sense for processes started via \c start() (as opposed to
+    \c exec()).
+
+    \section2 workingDirectory
+    \code
+    workingDirectory(): string
+    \endcode
+    Returns the directory the process will be started in.
+
+    \section2 write
+    \code
+    write(data: string): void
+    \endcode
+    Writes \c data into the process' input channel.
+
+    \section2 writeLine
+    \code
+    writeLine(data: string): void
+    \endcode
+    Writes \c data, followed by the newline character(s), into the process' input channel.
+*/

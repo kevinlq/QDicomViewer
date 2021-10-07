@@ -1,0 +1,131 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of Qbs.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage index.html
+    \page jsextension-propertylist.html
+    \ingroup list-of-builtin-services
+
+    \title PropertyList Service
+    \brief Provides read, write and convert operations on property list files.
+
+    The \c PropertyList service allows you to read and write property list files in
+    all formats supported by the Core Foundation API: XML, binary, JSON, and OpenStep (read-only).
+
+    This service is only available on Darwin platforms such as iOS, macOS, tvOS, and watchOS.
+
+    \section1 Available operations
+
+    \section2 Constructor
+    \code
+    PropertyList()
+    \endcode
+    Allocates and returns a new PropertyList object.
+
+    \section2 clear
+    \code
+    clear(): void
+    \endcode
+    Voids the property list by deleting its internal object reference.
+
+    \section2 isEmpty
+    \code
+    isEmpty(): boolean
+    \endcode
+    Returns true if the property list has no internal object reference set, otherwise false.
+
+    \section2 format
+    \code
+    format(): string
+    \endcode
+    Returns the data format that the property list data was deserialized from. This property is set
+    after calling \c readFromString or \c readFromFile.
+    Possible return values include: \c "binary1", \c "json", \c "openstep", and \c "xml1".
+    If the property list object is empty or the input format could not be determined,
+    returns \c undefined.
+
+    \section2 readFromFile
+    \code
+    readFromFile(filePath: string): void
+    \endcode
+    Parses the file and stores the result in the property list.
+    Throws an exception if an I/O error occurs or the input is in an invalid format.
+
+    \section2 readFromObject
+    \code
+    readFromObject(obj: any): void
+    \endcode
+    Sets the given object as the property list's internal object.
+    \c format() will return \c undefined as this method does not deserialize a storage format.
+
+    \section2 readFromString
+    \code
+    readFromString(input: string): void
+    \endcode
+    Parses \c input and stores the result in the property list.
+    This is most useful for initializing a property list object from the result of a
+    \c JSON.stringify call.
+    Throws an exception if the input is in an invalid format.
+
+    \section2 toObject
+    \code
+    toObject(): any
+    \endcode
+    Returns an object representing the property list.
+
+    \section2 toJSON
+    \code
+    toJSON(style: string = "compact"): string
+    \endcode
+    Returns a string representation of the property list in JSON format.
+    Possible values for \c style include \c "pretty" and \c "compact". The default is compact.
+
+    \section2 toString
+    \code
+    toString(format: string): string
+    \endcode
+    Returns a string representation of the property list in the specified format.
+    Possible values for \c format include: \c "json" (compact), \c "json-compact", \c "json-pretty",
+    and \c "xml1". Currently, the OpenStep format is not supported.
+    Throws an exception if the object cannot be written in the given format.
+
+    \section2 toXMLString
+    \code
+    toXMLString(): string
+    \endcode
+    Returns a string representation of the property list in XML format.
+    This function is a synonym for \c toString("xml1").
+
+    \section2 writeToFile
+    \code
+    writeToFile(filePath: string, format: string): void
+    \endcode
+    Writes the property list to the file in the given format.
+    Possible values for \c format include: \c "binary1", \c "json" (compact), \c "json-compact",
+    \c "json-pretty", and \c "xml1". Currently, the OpenStep format is not supported for writing.
+    Throws an exception if an I/O error occurs or the object cannot be written in the given format.
+*/

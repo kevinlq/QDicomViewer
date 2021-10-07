@@ -1,0 +1,1 @@
+DLLEXPORT void unusedFunc3() { }

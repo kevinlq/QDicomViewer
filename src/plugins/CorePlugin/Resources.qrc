@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/toolPanel/export.png</file>
+        <file>images/toolPanel/layout.png</file>
+        <file>images/toolPanel/measure.png</file>
+        <file>images/toolPanel/openFile.png</file>
+        <file>images/toolPanel/syncSeries.png</file>
+        <file>images/toolPanel/tagEdit.png</file>
+        <file>images/toolPanel/WL.png</file>
+        <file>images/QRadiant_title.png</file>
+        <file>images/logo/256/QDcmViewer.png</file>
+        <file>images/logo/128/QDcmViewer.png</file>
+        <file>images/logo/64/QDcmViewer.png</file>
+    </qresource>
+</RCC>

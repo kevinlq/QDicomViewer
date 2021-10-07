@@ -1,0 +1,53 @@
+import qbs 1.0
+import qbs.TextFile
+
+Project {
+    Product {
+        name: 'someapp'
+        type: 'application'
+        consoleApplication: true
+        Depends { name: 'cpp' }
+        Group {
+            files: [ "main.cpp" ]
+            fileTags: [ "foosource", "cpp" ]
+        }
+    }
+
+    Rule {
+        inputs: ["foosource"]
+        Artifact {
+            filePath: input.baseName + ".foo"
+            fileTags: ["foo"]
+        }
+
+        prepare: {
+            var cmd = new JavaScriptCommand();
+            cmd.sourceCode = "var file = new TextFile(output.filePath, TextFile.WriteOnly);";
+            cmd.sourceCode += "file.truncate();"
+            cmd.sourceCode += "file.write(\"There's nothing to see here!\");"
+            cmd.sourceCode += "file.close();"
+            cmd.description = "generating something";
+            return cmd;
+        }
+    }
+
+    Rule {
+        inputs: ["foo"]
+        Artifact {
+            filePath: input.baseName + "_foo.cpp"
+            fileTags: ["cpp"]
+        }
+
+        prepare: {
+            var cmd = new JavaScriptCommand();
+            cmd.sourceCode = "var file = new TextFile(output.filePath, TextFile.WriteOnly);";
+            cmd.sourceCode += "file.truncate();";
+            cmd.sourceCode += "file.write(\"// There's nothing to see here!\\n\");";
+            cmd.sourceCode += "file.write(\"int foo() { return 15; }\\n\");";
+            cmd.sourceCode += "file.close();";
+            cmd.description = "generating something";
+            return cmd;
+        }
+    }
+}
+

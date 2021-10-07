@@ -1,0 +1,38 @@
+include($QT_INSTALL_DOCS/global/macros.qdocconf)
+include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
+include($QT_INSTALL_DOCS/global/compat.qdocconf)
+include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
+
+project     = "Qbs"
+description = "Qbs Manual"
+
+headerdirs =
+sourcedirs = ..
+imagedirs = ../images ../templates/images
+exampledirs = ..
+
+include(macros.qdocconf)
+sources.fileextensions  = "*.qdoc"
+
+
+qhp.projects            = Qbs
+qhp.Qbs.file             = qbs.qhp
+qhp.Qbs.namespace        = org.qt-project.qbs.$QBS_VERSION_TAG
+qhp.Qbs.virtualFolder    = doc
+qhp.Qbs.indexTitle       = Qbs
+qhp.Qbs.filterAttributes = qbs $QBS_VERSION
+qhp.Qbs.customFilters.Qbs.name = Qbs $QBS_VERSION
+qhp.Qbs.customFilters.Qbs.filterAttributes = qbs $QBS_VERSION
+qhp.Qbs.indexRoot        =
+
+qhp.Qbs.subprojects = manual
+qhp.Qbs.subprojects.manual.title = Qbs Manual
+qhp.Qbs.subprojects.manual.indexTitle = Qbs Manual
+qhp.Qbs.subprojects.manual.type = manual
+
+# Doxygen compatibility commands
+macro.see                       = "\\sa"
+macro.function                  = "\\fn"
+
+navigation.homepage = "Qbs Manual"
+buildversion        = "Qbs $QBS_VERSION"

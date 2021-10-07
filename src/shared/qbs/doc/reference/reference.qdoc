@@ -1,0 +1,99 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of Qbs.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+/*!
+    \contentspage index.html
+    \previouspage howtos.html
+    \page reference.html
+    \nextpage building-qbs.html
+
+    \title Reference
+
+    \list
+        \li \l{List of All Items}
+        \list
+            \li \l{List of Language Items}
+            \li \l{List of Convenience Items}
+        \endlist
+        \li \l{List of Built-in Services}
+        \li \l{List of Command-line Tools}
+        \li \l{List of Modules}
+        \li \l{Command and JavaScriptCommand}
+    \endlist
+*/
+
+/*!
+    \contentspage reference.html
+    \group list-of-builtin-services
+    \title List of Built-in Services
+    \QBS provides the following built-in JavaScript extensions to simplify operations that
+    are expected to be needed often in project files.
+
+    To gain access to the operations provided by a particular Service - for example,
+    the File service - use the following statement at the top of your \QBS project file:
+    \code
+    import qbs.File
+    \endcode
+
+    If you instead need to access the service from a JavaScript file, import it using the following
+    statement at the top of your JavaScript file:
+    \code
+    var File = require("qbs.File");
+    \endcode
+*/
+
+/*!
+    \contentspage reference.html
+    \group list-of-modules
+    \title List of Modules
+    These are the modules shipped with \QBS.
+*/
+
+/*!
+    \contentspage reference.html
+    \group list-of-items
+    \title List of All Items
+
+    \QBS provides the following \l{List of Language Items}{built-in} and
+    \l{List of Convenience Items}{convenience} items to define projects.
+*/
+
+/*!
+    \contentspage reference.html
+    \group list-of-language-items
+    \title List of Language Items
+
+    \QBS provides the following built-in QML items to define projects.
+    These are the primitives upon which all other \QBS items are built.
+*/
+
+/*!
+    \contentspage reference.html
+    \group list-of-convenience-items
+    \title List of Convenience Items
+
+    \QBS provides the following QML items for convenience.
+*/

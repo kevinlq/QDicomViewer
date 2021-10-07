@@ -1,0 +1,2 @@
+macro.QBS               = "Qbs"
+macro.qbsversion        = $QBS_VERSION

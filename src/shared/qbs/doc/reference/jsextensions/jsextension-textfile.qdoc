@@ -1,0 +1,105 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of Qbs.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage index.html
+    \page jsextension-textfile.html
+    \ingroup list-of-builtin-services
+
+    \title TextFile Service
+    \brief Provides read and write operations on text files.
+
+    The \c TextFile service allows you to read from and write into text files.
+
+    \section1 Related Declarations
+
+    \section2 TextFile.OpenMode
+    \code
+    enum TextFile.OpenMode { ReadOnly, WriteOnly, ReadWrite }
+    \endcode
+    List of modes that a file may be opened in.
+
+    \section1 Available operations
+
+    \section2 Constructor
+    \code
+    TextFile(filePath: string, openMode: OpenMode = TextFile.ReadOnly)
+    \endcode
+    Opens the file at \c filePath in the given mode and returns the object representing the file.
+    \note The mode influences which of the operations listed below can actually be used on the file.
+
+    \section2 atEof
+    \code
+    atEof(): boolean
+    \endcode
+    Returns \c{true} if no more data can be read from the file, \c{false} otherwise.
+
+    \section2 close
+    \code
+    close(): void
+    \endcode
+    Closes the file. It is recommended to always call this function as soon as you are finished
+    with the file, in order to keep the number of in-flight file descriptors as low as possible.
+
+    \section2 readAll
+    \code
+    readAll(): string
+    \endcode
+    Reads all data from the file and returns it.
+
+    \section2 readLine
+    \code
+    readLine(): string
+    \endcode
+    Reads one line of text from the file and returns it. The returned string does not contain
+    the newline characters.
+
+    \section2 setCodec
+    \code
+    setCodec(codec: string): void
+    \endcode
+    Sets the text codec to \c codec. The supported codecs are the same as for \c QTextCodec,
+    for example: "UTF-8", "UTF-16", and "ISO 8859-1".
+
+    \section2 truncate
+    \code
+    truncate(): void
+    \endcode
+    Truncates the file, that is, gives it the size of zero, removing all content.
+
+    \section2 write
+    \code
+    write(data: string): void
+    \endcode
+    Writes \c data into the file at the current position.
+
+    \section2 writeLine
+    \code
+    writeLine(data: string): void
+    \endcode
+    Writes \c data into the file at the current position and appends the newline character(s).
+*/

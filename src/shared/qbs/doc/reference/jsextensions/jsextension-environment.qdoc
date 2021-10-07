@@ -1,0 +1,69 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of Qbs.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage index.html
+    \page jsextension-environment.html
+    \ingroup list-of-builtin-services
+
+    \title Environment Service
+    \brief Provides operations on the system environment.
+
+    The \c Environment service offers access to the system environment or process environment.
+
+    \section1 Available Operations
+
+    \section2 currentEnv
+    \code
+    Environment.currentEnv(): { [key: string]: string; }
+    \endcode
+    Returns the environment of \QBS in the current context as an object whose properties are
+    the environment variables.
+
+    \section2 getEnv
+    \code
+    Environment.getEnv(key: string): string
+    \endcode
+    Tries to find a variable with the given name in the current context's environment and returns
+    its value. If no such variable could be found, \c undefined is returned.
+
+    \section2 putEnv
+    \code
+    Environment.putEnv(key: string, value: string): void
+    \endcode
+    Sets the value of the environment variable with the given name in the build or run environment.
+    This method is only available in the \c Module.setupBuildEnvironment and
+    \c Module.setupRunEnvironment scripts.
+
+    \section2 unsetEnv
+    \code
+    Environment.unsetEnv(key: string): void
+    \endcode
+    Unsets the environment variable with the given name from the build or run environment.
+    This method is only available in the \c Module.setupBuildEnvironment and
+    \c Module.setupRunEnvironment scripts.
+*/
