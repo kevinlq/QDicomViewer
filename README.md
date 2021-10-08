@@ -43,11 +43,13 @@
 
 ## 编译
 
-### 下载 [Qt SDK](https://download.qt.io/archive/qt/)
+### 1.下载 [Qt SDK](https://download.qt.io/archive/qt/)
 
 建议最低版本 Qt 5.7开始
 
-### 下载[DCMTK](https://dicom.offis.de/dcmtk.php.en)
+### 2. 下载[DCMTK](https://dicom.offis.de/dcmtk.php.en)
+
+最低选择 3.6版本，需要使用`CMake`先进行编译
 
 ## 框架说明
 
@@ -62,7 +64,8 @@
 ## 总结
 
 关于详细介绍以及使用过程，可以关注微信公众号： devstone， 获取查看
-![code](./screen/myCode.png)
+
+<img src="screen/myCode.png" width="50" height="50">
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
