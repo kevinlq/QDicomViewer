@@ -53,7 +53,7 @@
 
 ## 框架说明
 
-软件采用`Qt Creator`开源框架，使用多插件方式编写
+软件采用`Qt Creator`开源框架，使用多插件方式编写，详细使用可以参考官方源码[QTC](https://github.com/qt-creator/qt-creator)
 
 
 ## 捐赠
