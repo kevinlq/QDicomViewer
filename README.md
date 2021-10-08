@@ -65,7 +65,7 @@
 
 关于详细介绍以及使用过程，可以关注微信公众号： devstone， 获取查看
 
-<img src="screen/myCode.png" width="50" height="50">
+![mycode](./screen/myCode.png)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
