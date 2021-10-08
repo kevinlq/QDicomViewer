@@ -41,6 +41,30 @@
 基于`Qt` 实现的一款医学影像阅片工具，方便查看浏览常见`dicom`图像
 
 
+## 编译
+
+### 下载 [Qt SDK](https://download.qt.io/archive/qt/)
+
+建议最低版本 Qt 5.7开始
+
+### 下载[DCMTK](https://dicom.offis.de/dcmtk.php.en)
+
+## 框架说明
+
+软件采用`Qt Creator`开源框架，使用多插件方式编写
+
+
+## 捐赠
+
+开源不易，如果你不想捐助，那就在右上角点个星星⭐吧
+
+
+## 总结
+
+关于详细介绍以及使用过程，可以关注微信公众号： devstone， 获取查看
+![code](./screen/myCode.png)
+
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/kevinlq/QDicomViewer.svg?style=for-the-badge
