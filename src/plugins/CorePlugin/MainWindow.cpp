@@ -13,6 +13,7 @@
 #include <utils/stringutils.h>
 #include <utils/utilsicons.h>
 #include <utils/filesearch.h>
+#include <utils/Frame/LayoutSelectPanel.h>
 #include <App/app_version.h>
 
 #include <CorePlugin/actionmanager/actioncontainer.h>
@@ -74,6 +75,12 @@ MainWindow::~MainWindow()
     PluginManager::removeObject(m_coreImpl);
     delete m_coreImpl;
     m_coreImpl = nullptr;
+
+    if (Q_NULLPTR != m_pSelectPanel)
+    {
+        delete m_pSelectPanel;
+        m_pSelectPanel = Q_NULLPTR;
+    }
 }
 
 bool MainWindow::init(QString *errorMessage)
@@ -278,9 +285,9 @@ void MainWindow::registerDefaultContainers()
     }
 
     QList<const char *> lsGroup;
-    lsGroup << Constants::G_ARCHIVE << Constants::G_FOLDER << Constants::G_DOWNLOAD << Constants::G_EXPORT
-            << Constants::G_SPLIT << Constants::G_SYNCHRONIZE << Constants::G_ANNOTATION << Constants::G_SERIES_BROWSER
-            << Constants::G_WL << Constants::G_PAN_IMAGE << Constants::G_ZOOM_IMAGE << Constants::G_MEASURE
+    lsGroup << Constants::G_ARCHIVE << Constants::G_FOLDER << Constants::G_DOWNLOAD << Constants::G_TOOLS
+            << Constants::G_SYNCHRONIZE << Constants::G_SERIES_BROWSER << Constants::G_WL
+            << Constants::G_PAN_IMAGE << Constants::G_ZOOM_IMAGE << Constants::G_MEASURE
             << Constants::G_ROTATE << Constants::G_CINE_PLAY << Constants::G_MULTIPLANAR << Constants::G_FUSION
             << Constants::G_HELP;
 
@@ -326,25 +333,14 @@ void MainWindow::registerDefaultContainers()
     lsGroup = {Constants::G_DOWNLOAD_FIND,Constants::G_DOWNLOAD_ACCEPT};
     initMenuGroup(pDownloadMenu, Constants::G_DOWNLOAD, lsGroup);
 
-    // 导出图像
-    ActionContainer* pExportMenu = ActionManager::createMenu(Constants::M_EXPORT);
-    pExportMenu->menu()->setTitle(tr("&Edit"));
-    lsGroup = {Constants::G_EXPORT_IMAGE,Constants::G_EXPORT_CPCLIPBOARD,Constants::G_EXPORT_CPALLCLIPBOARD};
-    initMenuGroup(pExportMenu, Constants::G_EXPORT, lsGroup);
-
-    // 布局拆分，序列拆分
-    ActionContainer* pSplitMenu = ActionManager::createMenu(Constants::M_SPLIT);
-    pSplitMenu->menu()->setTitle(tr("&Split"));
-    lsGroup = {Constants::G_SPLIT_OPEN_MULSERIES,Constants::G_SPLIT_SPLIT_SERIES,Constants::G_SPLIT_CLOSECURPANEL
-               ,Constants::G_SPLIT_CLOSEALLPANEL,Constants::G_SPLIT_SHOWTAG};
-    initMenuGroup(pSplitMenu, Constants::G_SPLIT, lsGroup);
-
-    //标签修改
-    ActionContainer* pAnnotationMenu = ActionManager::createMenu(Constants::M_ANNOTATION);
-    pAnnotationMenu->menu()->setTitle(tr("&Annotation"));
-    lsGroup = {Constants::G_ANNOTATION_ANNOTATION,Constants::G_ANNOTATION_CROSSLINE,Constants::G_ANNOTATION_HIDEPATIENT
-               ,Constants::G_ANNOTATION_HIDEMEASUREMENT};
-    initMenuGroup(pAnnotationMenu, Constants::G_ANNOTATION, lsGroup);
+    // 工具菜单
+    ActionContainer* pToolsMenu = ActionManager::createMenu(Constants::M_TOOLS);
+    pToolsMenu->menu()->setTitle(tr("&Tools"));
+    lsGroup = {Constants::G_TOOLS_IMAGE,Constants::G_TOOLS_CPCLIPBOARD,Constants::G_TOOLS_CPALLCLIPBOARD
+               ,Constants::G_TOOLS_SPLIT_SERIES,Constants::G_TOOLS_SHOWTAG,Constants::G_TOOLS_ANNOTATION
+               ,Constants::G_TOOLS_CROSSLINE,Constants::G_TOOLS_HIDEPATIENT
+               ,Constants::G_TOOLS_HIDEMEASUREMENT};
+    initMenuGroup(pToolsMenu, Constants::G_TOOLS, lsGroup);
 
     // 窗宽窗位
     ActionContainer* pWLMenu = ActionManager::createMenu(Constants::M_WL);
@@ -379,9 +375,10 @@ void MainWindow::registerDefaultContainers()
 
 void MainWindow::registerDefaultActions()
 {
-    ActionContainer *pArchiveMenu = ActionManager::actionContainer(Constants::M_ARCHIVE);
-    ActionContainer *pFolderMenu = ActionManager::actionContainer(Constants::M_FOLDER);
-    ActionContainer *pHelpMenu = ActionManager::actionContainer(Constants::M_HELP);
+    ActionContainer *pArchiveMenu   = ActionManager::actionContainer(Constants::M_ARCHIVE);
+    ActionContainer *pFolderMenu    = ActionManager::actionContainer(Constants::M_FOLDER);
+    ActionContainer *pToolsMenu     = ActionManager::actionContainer(Constants::M_TOOLS);
+    ActionContainer *pHelpMenu      = ActionManager::actionContainer(Constants::M_HELP);
 
     // ========================= Import =========================
     QAction *tmpaction = new QAction(tr("&import"), this);
@@ -413,6 +410,60 @@ void MainWindow::registerDefaultActions()
     tmpaction  = new QAction(tr("&Open Dicom PKG"), this);
     cmd = ActionManager::registerAction(tmpaction, Constants::HELP_FOLDER_OPEN_PKGFILE);
     pFolderMenu->addAction(cmd, Constants::G_FOLDER_PKG);
+
+    //=========================  工具栏========================
+    tmpaction  = new QAction(tr("&Export To Image"), this);
+    cmd = ActionManager::registerAction(tmpaction, Constants::EXPORT_TO_IMAGE);
+    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+E")));
+    pToolsMenu->addAction(cmd, Constants::G_TOOLS_IMAGE);
+
+    tmpaction  = new QAction(tr("&Export To Clipboard"), this);
+    cmd = ActionManager::registerAction(tmpaction, Constants::EXPORT_TO_CLIPBOARD);
+    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+C")));
+    pToolsMenu->addAction(cmd, Constants::G_TOOLS_CPCLIPBOARD);
+
+    pToolsMenu->addSeparator(Constants::G_TOOLS_CPCLIPBOARD);
+
+    m_pSelectPanel = new LayoutSelectPanel(this);
+    connect(m_pSelectPanel, &LayoutSelectPanel::signalSelectLayoutChange, m_pContentWidget, &ContentWidgetContainer::updateLayout);
+    QWidgetAction *pWidgetAction  = new QWidgetAction(this/*tr("&Split"), this*/);
+    pWidgetAction->setText(tr("&Split"));
+    pWidgetAction->setDefaultWidget(m_pSelectPanel);
+    cmd = ActionManager::registerAction(pWidgetAction, Constants::TOOLS_SPLIT);
+    pToolsMenu->addAction(cmd, Constants::G_TOOLS_SPLIT_SERIES);
+    connect(pWidgetAction, &QWidgetAction::triggered, this, &MainWindow::showSplitPanel);
+
+    tmpaction  = new QAction(tr("&Show Annotation"), this);
+    tmpaction->setCheckable(true);
+    tmpaction->setChecked(true);
+    cmd = ActionManager::registerAction(tmpaction, Constants::TOOLS_SHOWANNO);
+    cmd->setDefaultKeySequence(QKeySequence(Qt::Key_F12));
+    pToolsMenu->addAction(cmd, Constants::G_TOOLS_ANNOTATION);
+
+    tmpaction  = new QAction(tr("&Show CrossLine"), this);
+    tmpaction->setCheckable(true);
+    tmpaction->setChecked(true);
+    cmd = ActionManager::registerAction(tmpaction, Constants::TOOLS_SHOWCROSSLINE);
+    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+F12")));
+    pToolsMenu->addAction(cmd, Constants::G_TOOLS_CROSSLINE);
+
+    tmpaction  = new QAction(tr("&Hide Patient"), this);
+    tmpaction->setCheckable(true);
+    cmd = ActionManager::registerAction(tmpaction, Constants::TOOLS_HIDEPATIENT);
+    cmd->setDefaultKeySequence(QKeySequence(tr("Shift+F12")));
+    pToolsMenu->addAction(cmd, Constants::G_TOOLS_HIDEPATIENT);
+
+    tmpaction  = new QAction(tr("&Hide Measurement"), this);
+    tmpaction->setCheckable(true);
+    cmd = ActionManager::registerAction(tmpaction, Constants::TOOLS_HIDEMEASUREMENT);
+    cmd->setDefaultKeySequence(QKeySequence(tr("Alt+F12")));
+    pToolsMenu->addAction(cmd, Constants::G_TOOLS_HIDEMEASUREMENT);
+
+    tmpaction  = new QAction(tr("&Show Tag"), this);
+    tmpaction->setCheckable(false);
+    cmd = ActionManager::registerAction(tmpaction, Constants::TOOLS_SHOWTAG);
+    cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Alt+T")));
+    pToolsMenu->addAction(cmd, Constants::G_TOOLS_SHOWTAG);
 
     //========================= Help=============================
     tmpaction  = new QAction(tr("&Online Help"), this);
@@ -518,6 +569,18 @@ void MainWindow::aboutPlugins()
 {
     PluginDialog dialog(this);
     dialog.exec();
+}
+
+void MainWindow::showSplitPanel()
+{
+    if (Q_NULLPTR == m_pSelectPanel)
+    {
+        return;
+    }
+
+    QCursor cursor;
+    m_pSelectPanel->move(cursor.pos());
+    m_pSelectPanel->show();
 }
 
 bool MainWindow::showOptionsDialog(Id page, QWidget *parent)

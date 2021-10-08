@@ -16,6 +16,8 @@ public:
 
     bool init();
 
+    void updateLayout(int nRow, int nCol);
+
 protected:
     QListPanel*     m_pListPanel;
     ViewPanel*      m_pViewPanel;

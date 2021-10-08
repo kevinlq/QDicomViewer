@@ -50,6 +50,7 @@ const char M_FOLDER[]              = "QDcmViewer.Menu.Folder";
 const char M_DOWNLOAD[]            = "QDcmViewer.Menu.Download";
 const char M_EXPORT[]              = "QDcmViewer.Menu.Export";
 const char M_SPLIT[]               = "QDcmViewer.Menu.Split";
+const char M_TOOLS[]               = "QDcmViewer.Menu.Tool";
 const char M_ANNOTATION[]          = "QDcmViewer.Menu.Annotation";
 const char M_WL[]                  = "QDcmViewer.Menu.WL";
 const char M_MEASURE[]             = "QDcmViewer.Menu.Measure";
@@ -139,17 +140,14 @@ const char G_DEFAULT_THREE[]       = "QDcmViewer.Group.Default.Three";
 const char G_FILE[]                = "QDcmViewer.Group.File";
 const char G_EDIT[]                = "QDcmViewer.Group.Edit";
 const char G_VIEW[]                = "QDcmViewer.Group.View";
-const char G_TOOLS[]               = "QDcmViewer.Group.Tools";
 const char G_WINDOW[]              = "QDcmViewer.Group.Window";
 
 const char G_MENU_GROUP_BASE[]     = "QDcmViewer.Group.";
 const char G_ARCHIVE[]             = "QDcmViewer.Group.Archive";      // 本地数据归档库
 const char G_FOLDER[]              = "QDcmViewer.Group.Folder";       // 打开文件/文件夹
 const char G_DOWNLOAD[]            = "QDcmViewer.Group.Download";     // 从远程PACS下载
-const char G_EXPORT[]              = "QDcmViewer.Group.Export";       // 导出dicom
-const char G_SPLIT[]               = "QDcmViewer.Group.Split";        // 视窗布局分格，序列拆分
+const char G_TOOLS[]               = "QDcmViewer.Group.Tools";        // 工具栏
 const char G_SYNCHRONIZE[]         = "QDcmViewer.Group.Synchronize";  // 序列同步
-const char G_ANNOTATION[]          = "QDcmViewer.Group.Annotation";   // 标签修改
 const char G_SERIES_BROWSER[]      = "QDcmViewer.Group.SeriesBrowser"; //序列浏览
 const char G_WL[]                  = "QDcmViewer.Group.WL";               // 窗宽窗位修改
 const char G_PAN_IMAGE[]           = "QDcmViewer.Group.PanImage";         //平移图像
@@ -178,6 +176,14 @@ const char HELP_FOLDER_OPEN_FOLDER[]= "QDcmViewer.OpenFolder";
 const char HELP_FOLDER_OPEN_FILE[]  = "QDcmViewer.OpenFile";
 const char HELP_FOLDER_OPEN_ZIPFILE[]  = "QDcmViewer.OpenZipFile";
 const char HELP_FOLDER_OPEN_PKGFILE[]  = "QDcmViewer.OpenPKGFile";
+const char EXPORT_TO_IMAGE[]           = "QDcmViewer.ExportToImage";
+const char EXPORT_TO_CLIPBOARD[]       = "QDcmViewer.ExportToCpClipboard";
+const char TOOLS_SPLIT[]               = "QDcmViewer.ToolsSplit";
+const char TOOLS_SHOWTAG[]             = "QDcmViewer.ToolsShowTag";
+const char TOOLS_SHOWANNO[]            = "QDcmViewer.ShowAnnotation";
+const char TOOLS_SHOWCROSSLINE[]       = "QDcmViewer.ShowCrossLine";
+const char TOOLS_HIDEPATIENT[]         = "QDcmViewer.HidePatientInfo";
+const char TOOLS_HIDEMEASUREMENT[]     = "QDcmViewer.HideMeasurement";
 
 // 本地数据归档库 菜单
 const char G_ARCHIVE_IMPORT[]      = "QDcmViewer.Group.Archive.Import";
@@ -195,27 +201,23 @@ const char G_FOLDER_PKG[]          = "QDcmViewer.Group.Folder.PKG";
 const char G_DOWNLOAD_FIND[]       = "QDcmViewer.Group.Download.Find";
 const char G_DOWNLOAD_ACCEPT[]     = "QDcmViewer.Group.Download.Accept";
 
-// 导出dicom 菜单
-const char G_EXPORT_IMAGE[]             = "QDcmViewer.Group.Export.Image";
-const char G_EXPORT_CPCLIPBOARD[]       = "QDcmViewer.Group.Export.CpClipboard";
-const char G_EXPORT_CPALLCLIPBOARD[]    = "QDcmViewer.Group.Export.CyAllClipboard";
-
-// 视窗布局分格，序列拆分
-const char G_SPLIT_OPEN_MULSERIES[] = "QDcmViewer.Group.Split.MulSeries";          // 打开多个序列
-const char G_SPLIT_SPLIT_SERIES[]   = "QDcmViewer.Group.Split.Split";              // 拆分
-const char G_SPLIT_CLOSECURPANEL[]  = "QDcmViewer.Group.Split.CloseCurPanel";      // 关闭当前面板
-const char G_SPLIT_CLOSEALLPANEL[]  = "QDcmViewer.Group.Split.CloseAllPanel";      // 关闭所有面板
-const char G_SPLIT_SHOWTAG[]        = "QDcmViewer.Group.Split.ShowTags";           // 显示tag标签
+// 工具 菜单
+const char G_TOOLS_IMAGE[]             = "QDcmViewer.Group.Export.Image";
+const char G_TOOLS_CPCLIPBOARD[]       = "QDcmViewer.Group.Export.CpClipboard";
+const char G_TOOLS_CPALLCLIPBOARD[]    = "QDcmViewer.Group.Export.CyAllClipboard";
+const char G_TOOLS_OPEN_MULSERIES[] = "QDcmViewer.Group.Split.MulSeries";          // 打开多个序列
+const char G_TOOLS_SPLIT_SERIES[]   = "QDcmViewer.Group.Split.Split";              // 拆分
+const char G_TOOLS_CLOSECURPANEL[]  = "QDcmViewer.Group.Split.CloseCurPanel";      // 关闭当前面板
+const char G_TOOLS_CLOSEALLPANEL[]  = "QDcmViewer.Group.Split.CloseAllPanel";      // 关闭所有面板
+const char G_TOOLS_SHOWTAG[]        = "QDcmViewer.Group.Split.ShowTags";           // 显示tag标签
+const char G_TOOLS_ANNOTATION[]         = "QDcmViewer.Group.Annotation.Annotation";
+const char G_TOOLS_CROSSLINE[]          = "QDcmViewer.Group.Annotation.CrossLine";   // 定位线
+const char G_TOOLS_HIDEPATIENT[]        = "QDcmViewer.Group.Annotation.HidePatient";   // 隐藏病人信息
+const char G_TOOLS_HIDEMEASUREMENT[]    = "QDcmViewer.Group.Annotation.HideMeasurement";   // 隐藏测量信息
 
 // 序列同步
 const char G_SYNCHRONIZE_SWITCH[]         = "QDcmViewer.Group.Synchronize.Switch";    // 切换序列同步
 const char G_SYNCHRONIZE_SWITCH_SLICE[]   = "QDcmViewer.Group.Synchronize.SwitchSlice";    // 同步层面位置
-
-// 注释
-const char G_ANNOTATION_ANNOTATION[]         = "QDcmViewer.Group.Annotation.Annotation";
-const char G_ANNOTATION_CROSSLINE[]          = "QDcmViewer.Group.Annotation.CrossLine";   // 定位线
-const char G_ANNOTATION_HIDEPATIENT[]        = "QDcmViewer.Group.Annotation.HidePatient";   // 隐藏病人信息
-const char G_ANNOTATION_HIDEMEASUREMENT[]    = "QDcmViewer.Group.Annotation.HideMeasurement";   // 隐藏测量信息
 
 // 窗宽窗位修改 菜单
 const char G_WL_DEFAULT[]                  = "QDcmViewer.Group.WL.Default";

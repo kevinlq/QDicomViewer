@@ -94,3 +94,8 @@ bool ContentWidgetContainer::init()
 
     return true;
 }
+
+void ContentWidgetContainer::updateLayout(int nRow, int nCol)
+{
+    m_pViewPanel->updateLayout(nRow, nCol);
+}

@@ -25,27 +25,24 @@ void ViewPanel::updateViewLayout()
 {
     updateLayoutInfo();
 
-    hideAllImagView();
+    updateViewLayoutPos();
+}
 
-    for (int i = 0; i < m_vtrLayoutInfo.size(); i++)
+void ViewPanel::updateLayout(int nRow, int nCol)
+{
+    m_vtrLayoutInfo.clear();
+
+    int nWidth = this->width();
+    int nHeight = this->height();
+
+    int nViewSize = nRow * nCol;
+
+    for (int i = 0; i < nViewSize; i++)
     {
-        DImageView *pImageView = getImageView(m_vtrLayoutInfo[i].m_nViewID);
-
-        if (Q_NULLPTR == pImageView)
-        {
-            pImageView = new(std::nothrow) DImageView(this);
-            pImageView->setViewID(m_vtrLayoutInfo[i].m_nViewID);
-            m_vtrpImageView.push_back(pImageView);
-
-            connect(pImageView, &DImageView::signalEvent, this, &ViewPanel::onSignalEvent);
-        }
-
-        pImageView->setVisible(true);
-        pImageView->setGeometry(m_vtrLayoutInfo[i].m_rcView);
+        m_vtrLayoutInfo.push_back(DS_LayoutInfo(i, QRect(i/nRow, i/nCol, nWidth/nCol, nHeight/nRow)));
     }
 
-    // 设置激活窗口
-    setImageViewActived(m_nActivedView, true);
+    updateViewLayoutPos();
 }
 
 void ViewPanel::paintEvent(QPaintEvent *event)
@@ -187,4 +184,29 @@ void ViewPanel::updateLayoutInfo()
         m_vtrLayoutInfo.push_back(DS_LayoutInfo(2, QRect(0, nHeight*0.5,nWidth*0.5, nHeight*0.5)));
         m_vtrLayoutInfo.push_back(DS_LayoutInfo(3, QRect(nWidth*0.5, nHeight*0.5, nWidth*0.5, nHeight*0.5)));
     }
+}
+
+void ViewPanel::updateViewLayoutPos()
+{
+    hideAllImagView();
+
+    for (int i = 0; i < m_vtrLayoutInfo.size(); i++)
+    {
+        DImageView *pImageView = getImageView(m_vtrLayoutInfo[i].m_nViewID);
+
+        if (Q_NULLPTR == pImageView)
+        {
+            pImageView = new(std::nothrow) DImageView(this);
+            pImageView->setViewID(m_vtrLayoutInfo[i].m_nViewID);
+            m_vtrpImageView.push_back(pImageView);
+
+            connect(pImageView, &DImageView::signalEvent, this, &ViewPanel::onSignalEvent);
+        }
+
+        pImageView->setVisible(true);
+        pImageView->setGeometry(m_vtrLayoutInfo[i].m_rcView);
+    }
+
+    // 设置激活窗口
+    setImageViewActived(m_nActivedView, true);
 }

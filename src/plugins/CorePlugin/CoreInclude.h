@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QAction>
+#include <QWidgetAction>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>

@@ -8,11 +8,16 @@
 
 class ContentWidgetContainer;
 
+namespace Utils{
+class LayoutSelectPanel;
+}
+
 namespace Core {
+class ActionContainer;
 namespace Internal
 {
-
 class VersionDialog;
+
 class MainWindow : public Utils::AppMainWindow
 {
     Q_OBJECT
@@ -53,12 +58,16 @@ private:
     void registerDefaultContainers();
     void registerDefaultActions();
 
+    bool registerDefaultActionFun(ActionContainer *pMenu, Id id, Id groupId,QList<const char *> lsGroup);
+
     void updateContextObject(const QList<IContext *> &context);
     void updateContext();
 
     void destroyVersionDialog();
     void aboutQDicomViewer();
     void aboutPlugins();
+
+    void showSplitPanel();
 
 private Q_SLOTS:
     bool showOptionsDialog(Id page, QWidget *parent = Q_NULLPTR);
@@ -67,10 +76,11 @@ protected:
     virtual void closeEvent(QCloseEvent *event);
 
 protected:
-    ICore                   *m_coreImpl         = nullptr;
-    QStringList              m_aboutInformation;
-    ContentWidgetContainer  *m_pContentWidget   = nullptr;
-    VersionDialog *m_pVersionDialog             = nullptr;
+    ICore                       *m_coreImpl         = nullptr;
+    QStringList                 m_aboutInformation;
+    ContentWidgetContainer      *m_pContentWidget   = nullptr;
+    VersionDialog               *m_pVersionDialog   = nullptr;
+    Utils::LayoutSelectPanel    *m_pSelectPanel     = nullptr;
 
     QList<IContext *> m_activeContext;
     QMap<QWidget *, IContext *> m_contextWidgets;

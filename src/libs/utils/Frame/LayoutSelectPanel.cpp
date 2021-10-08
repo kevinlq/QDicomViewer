@@ -200,6 +200,9 @@ LayoutSelectPanel::LayoutSelectPanel(QWidget *parent)
 {
     resize(200,200);
 
+    setWindowFlags(Qt::FramelessWindowHint| Qt::Dialog);
+    setWindowModality(Qt::WindowModal);
+
     setStyleSheet(BACKGROUND_STYLE);
     m_pPanelImpl->createLayout(6,6);
 
@@ -234,9 +237,11 @@ void LayoutSelectPanel::setPanelLayout(int nRow, int nColumn)
 
 void LayoutSelectPanel::leaveEvent(QEvent *event)
 {
+    m_pPanelImpl->updateStyleForMouseMove(QPoint(0, 0));
+
     QWidget::leaveEvent(event);
 
-    m_pPanelImpl->updateStyleForMouseMove(QPoint(0, 0));
+    this->close();
 }
 
 void LayoutSelectPanel::mousePressEvent(QMouseEvent *event)
@@ -253,6 +258,8 @@ void LayoutSelectPanel::mousePressEvent(QMouseEvent *event)
     m_pPanelImpl->updateSelectLayout(ptPos);
 
     emit signalSelectLayoutChange(m_pPanelImpl->m_nSelectColumn, m_pPanelImpl->m_nSelectRow);
+
+    this->close();
 }
 
 void LayoutSelectPanel::mouseMoveEvent(QMouseEvent *event)
