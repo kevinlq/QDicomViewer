@@ -14,12 +14,11 @@ msvc: QMAKE_CXXFLAGS += -wd4251 -wd4290 -wd4250
 
 INCLUDEPATH +=$$PWD/../../
 
-include($$PWD/actionManager/ActionManager.pri)
+include($$PWD/actionmanager/ActionManager.pri)
 include($$PWD/Dialogs/Dialogs.pri)
 
 HEADERS += \
     ContentWidgetContainer.h \
-    CoreDataStruct.h \
     CoreInclude.h \
     CoreUtil.h \
     DragProgress.h \
@@ -39,11 +38,11 @@ HEADERS += \
     ListPanel/DicomListView.h \
     ListPanel/QListPanelManager.h \
     ListPanel/QListPanelManagerPrivate.h \
-    StatusPanel/QStatusPanel.h
+    StatusPanel/QStatusPanel.h \
+    CoreDataStruct.h
 
 SOURCES += \
     ContentWidgetContainer.cpp \
-    CoreDataStruct.cpp \
     CoreUtil.cpp \
     DragProgress.cpp \
     MainWindow.cpp \
@@ -60,7 +59,8 @@ SOURCES += \
     ListPanel/DicomListView.cpp \
     ListPanel/QListPanelManager.cpp \
     ListPanel/QListPanelManagerPrivate.cpp \
-    StatusPanel/QStatusPanel.cpp
+    StatusPanel/QStatusPanel.cpp \
+    CoreDataStruct.cpp
 
 
 win32 {

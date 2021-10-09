@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include "Coreplugin/Dialogs/ioptionspage.h"
+#include "CorePlugin/Dialogs/ioptionspage.h"
 
 #include <QList>
 #include <QSet>

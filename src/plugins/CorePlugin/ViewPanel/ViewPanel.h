@@ -5,6 +5,7 @@
 
 struct DS_LayoutInfo
 {
+    DS_LayoutInfo(){}
     DS_LayoutInfo(int nID, QRect rcView)
         : m_nViewID(nID), m_rcView(rcView)
     {}

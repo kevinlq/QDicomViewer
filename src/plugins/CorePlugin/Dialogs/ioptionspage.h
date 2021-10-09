@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include <Coreplugin/id.h>
+#include <CorePlugin/id.h>
 
 #include <utils/icon.h>
 

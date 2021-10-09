@@ -3,7 +3,7 @@ include(../../QDicomViewer.pri)
 TEMPLATE  = subdirs
 
 SUBDIRS   = \
-    Coreplugin
+    CorePlugin
 
 for(p, SUBDIRS) {
     QDV_PLUGIN_DEPENDS =

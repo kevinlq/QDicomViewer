@@ -26,9 +26,9 @@
 #include "versiondialog.h"
 #include "../coreicons.h"
 
-#include <app/app_version.h>
-#include <Coreplugin/coreicons.h>
-#include <coreplugin/icore.h>
+#include <App/app_version.h>
+#include <CorePlugin/coreicons.h>
+#include <CorePlugin/icore.h>
 #include <utils/algorithm.h>
 #include <utils/hostosinfo.h>
 #include <utils/qtcassert.h>

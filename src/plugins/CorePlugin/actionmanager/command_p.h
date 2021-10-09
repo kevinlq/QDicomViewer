@@ -27,8 +27,8 @@
 
 #include "command.h"
 
-#include <coreplugin/id.h>
-#include <coreplugin/icontext.h>
+#include <CorePlugin/id.h>
+#include <CorePlugin/icontext.h>
 
 #include <utils/proxyaction.h>
 

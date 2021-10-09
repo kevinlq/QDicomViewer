@@ -2,6 +2,12 @@
 #define COREDATASTRUCT_H
 
 #include "core_global.h"
+QT_BEGIN_NAMESPACE
+#include <QString>
+#include <QImage>
+#include <QVariant>
+#include <QSize>
+QT_END_NAMESPACE
 
 // 列表数据结构
 struct CORE_EXPORT ListItemData

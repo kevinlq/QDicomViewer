@@ -25,7 +25,7 @@
 
 #include "settingsdialog.h"
 
-#include <Coreplugin/icore.h>
+#include <CorePlugin/icore.h>
 
 #include <extensionsystem/pluginmanager.h>
 #include <utils/algorithm.h>

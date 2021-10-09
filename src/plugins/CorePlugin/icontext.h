@@ -25,8 +25,8 @@
 
 #pragma once
 
-#include <coreplugin/core_global.h>
-#include <coreplugin/id.h>
+#include <CorePlugin/core_global.h>
+#include <CorePlugin/id.h>
 
 #include <QList>
 #include <QObject>

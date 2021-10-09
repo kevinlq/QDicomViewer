@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include <coreplugin/core_global.h>
+#include <CorePlugin/core_global.h>
 
 #include <QWidget>
 

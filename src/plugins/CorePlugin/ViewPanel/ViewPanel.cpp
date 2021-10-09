@@ -35,11 +35,18 @@ void ViewPanel::updateLayout(int nRow, int nCol)
     int nWidth = this->width();
     int nHeight = this->height();
 
-    int nViewSize = nRow * nCol;
-
-    for (int i = 0; i < nViewSize; i++)
+    for(int c = 0; c < nCol; c++)
     {
-        m_vtrLayoutInfo.push_back(DS_LayoutInfo(i, QRect(i/nRow, i/nCol, nWidth/nCol, nHeight/nRow)));
+        for(int r = 0; r < nRow; r++)
+        {
+            int viewid = c * nRow + r;
+            int viewx = nWidth * (r*1.0f / nRow);
+            int viewy = nHeight * (c*1.0f / nCol);
+            int viewh = nHeight * (1.0f / nCol);
+            int vieww = nWidth * (1.0f/ nRow);
+
+            m_vtrLayoutInfo.push_back(DS_LayoutInfo(viewid, QRect(viewx, viewy, vieww, viewh)));
+        }
     }
 
     updateViewLayoutPos();

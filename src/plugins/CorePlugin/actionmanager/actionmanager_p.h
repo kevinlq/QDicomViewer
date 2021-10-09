@@ -25,9 +25,9 @@
 
 #pragma once
 
-#include <coreplugin/actionmanager/command_p.h>
-#include <coreplugin/actionmanager/actioncontainer_p.h>
-#include <coreplugin/icontext.h>
+#include <CorePlugin/actionmanager/command_p.h>
+#include <CorePlugin/actionmanager/actioncontainer_p.h>
+#include <CorePlugin/icontext.h>
 
 #include <QMap>
 #include <QHash>

@@ -1,6 +1,9 @@
 #pragma once
 
 #include <QtGlobal>
+#include <QDataStream>
+#include <QSize>
+#include <QColor>
 
 namespace Core {
 namespace Constants {
