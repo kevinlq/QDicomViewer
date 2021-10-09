@@ -397,19 +397,23 @@ void MainWindow::registerDefaultActions()
     cmd = ActionManager::registerAction(tmpaction, Constants::HELP_FOLDER_OPEN_FOLDER);
     cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+Shift+O")));
     pFolderMenu->addAction(cmd, Constants::G_FOLDER_OPENFOLDER);
+    connect(tmpaction, &QAction::triggered, this, &MainWindow::openDcmFolder);
 
     tmpaction  = new QAction(tr("&Open Dicom File"), this);
     cmd = ActionManager::registerAction(tmpaction, Constants::HELP_FOLDER_OPEN_FILE);
     cmd->setDefaultKeySequence(QKeySequence(tr("Ctrl+O")));
     pFolderMenu->addAction(cmd, Constants::G_FOLDER_OPENFILE);
+    connect(tmpaction, &QAction::triggered, this, &MainWindow::openDcmFile);
 
     tmpaction  = new QAction(tr("&Open Dicom Zip"), this);
     cmd = ActionManager::registerAction(tmpaction, Constants::HELP_FOLDER_OPEN_ZIPFILE);
     pFolderMenu->addAction(cmd, Constants::G_FOLDER_ZIP);
+    connect(tmpaction, &QAction::triggered, this, &MainWindow::openDcmZipFile);
 
     tmpaction  = new QAction(tr("&Open Dicom PKG"), this);
     cmd = ActionManager::registerAction(tmpaction, Constants::HELP_FOLDER_OPEN_PKGFILE);
     pFolderMenu->addAction(cmd, Constants::G_FOLDER_PKG);
+    connect(tmpaction, &QAction::triggered, this, &MainWindow::openDcmPKGFile);
 
     //=========================  工具栏========================
     tmpaction  = new QAction(tr("&Export To Image"), this);
@@ -581,6 +585,22 @@ void MainWindow::showSplitPanel()
     QCursor cursor;
     m_pSelectPanel->move(cursor.pos());
     m_pSelectPanel->show();
+}
+
+void MainWindow::openDcmFolder()
+{
+}
+
+void MainWindow::openDcmFile()
+{
+}
+
+void MainWindow::openDcmZipFile()
+{
+}
+
+void MainWindow::openDcmPKGFile()
+{
 }
 
 bool MainWindow::showOptionsDialog(Id page, QWidget *parent)

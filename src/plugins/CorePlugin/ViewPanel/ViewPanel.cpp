@@ -12,6 +12,8 @@ ViewPanel::ViewPanel(QWidget *parent)
     : QWidget(parent)
     , m_nActivedView(0)
     , m_bSingleView(false)
+    , m_nLayoutRow(1)
+    , m_nLayoutCol(1)
 {
     m_vtrpImageView.clear();
 }
@@ -25,16 +27,18 @@ void ViewPanel::updateViewLayout()
 {
     updateLayoutInfo();
 
-    updateViewLayoutPos();
+    updateLayout();
 }
 
-void ViewPanel::updateLayout(int nRow, int nCol)
+bool ViewPanel::updateLayout(int nRow, int nCol)
 {
-    m_vtrLayoutInfo.clear();
+    m_nLayoutRow = nRow;
+    m_nLayoutCol = nCol;
 
     int nWidth = this->width();
     int nHeight = this->height();
 
+    VTR_LAYOUT tmpLayoutInfo;
     for(int c = 0; c < nCol; c++)
     {
         for(int r = 0; r < nRow; r++)
@@ -45,11 +49,15 @@ void ViewPanel::updateLayout(int nRow, int nCol)
             int viewh = nHeight * (1.0f / nCol);
             int vieww = nWidth * (1.0f/ nRow);
 
-            m_vtrLayoutInfo.push_back(DS_LayoutInfo(viewid, QRect(viewx, viewy, vieww, viewh)));
+            tmpLayoutInfo.push_back(DS_LayoutInfo(viewid, QRect(viewx, viewy, vieww, viewh)));
         }
     }
 
-    updateViewLayoutPos();
+    m_vtrLayoutInfo.swap(tmpLayoutInfo);
+
+    updateLayout();
+
+    return true;
 }
 
 void ViewPanel::paintEvent(QPaintEvent *event)
@@ -174,26 +182,21 @@ bool ViewPanel::setImageViewActived(int nViewID, bool bActived)
 
 void ViewPanel::updateLayoutInfo()
 {
-    m_vtrLayoutInfo.clear();
-
     int nWidth = this->width();
     int nHeight = this->height();
 
     if (m_bSingleView)
     {
+        m_vtrLayoutInfo.clear();
         m_vtrLayoutInfo.push_back(DS_LayoutInfo(m_nActivedView, QRect(0, 0, nWidth, nHeight)));
     }
     else
     {
-        // 默认四分格，后续可以通过配置文件扩展
-        m_vtrLayoutInfo.push_back(DS_LayoutInfo(0, QRect(0, 0, nWidth*0.5, nHeight*0.5)));
-        m_vtrLayoutInfo.push_back(DS_LayoutInfo(1, QRect(nWidth*0.5, 0, nWidth*0.5, nHeight*0.5)));
-        m_vtrLayoutInfo.push_back(DS_LayoutInfo(2, QRect(0, nHeight*0.5,nWidth*0.5, nHeight*0.5)));
-        m_vtrLayoutInfo.push_back(DS_LayoutInfo(3, QRect(nWidth*0.5, nHeight*0.5, nWidth*0.5, nHeight*0.5)));
+        updateLayout(m_nLayoutRow, m_nLayoutCol);
     }
 }
 
-void ViewPanel::updateViewLayoutPos()
+void ViewPanel::updateLayout()
 {
     hideAllImagView();
 
@@ -213,7 +216,4 @@ void ViewPanel::updateViewLayoutPos()
         pImageView->setVisible(true);
         pImageView->setGeometry(m_vtrLayoutInfo[i].m_rcView);
     }
-
-    // 设置激活窗口
-    setImageViewActived(m_nActivedView, true);
 }

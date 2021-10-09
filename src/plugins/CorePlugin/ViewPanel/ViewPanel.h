@@ -26,7 +26,7 @@ public:
     ~ViewPanel();
 
     void updateViewLayout();
-    void updateLayout(int nRow, int nCol);
+    bool updateLayout(int nRow, int nCol);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
@@ -46,13 +46,16 @@ private:
     bool setImageViewActived(int nViewID,bool bActived);
 
     void updateLayoutInfo();
-    void updateViewLayoutPos();
+    void updateLayout();
 
 private:
     VTRP_IMAGEVIEW  m_vtrpImageView;
     VTR_LAYOUT      m_vtrLayoutInfo;
     int             m_nActivedView;
     bool            m_bSingleView;
+
+    int             m_nLayoutRow;
+    int             m_nLayoutCol;
 };
 
 #endif // VIEWPANEL_H

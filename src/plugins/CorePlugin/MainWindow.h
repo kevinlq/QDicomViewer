@@ -69,6 +69,12 @@ private:
 
     void showSplitPanel();
 
+    // =========================open dicom file operate ==================
+    void openDcmFolder();
+    void openDcmFile();
+    void openDcmZipFile();
+    void openDcmPKGFile();
+
 private Q_SLOTS:
     bool showOptionsDialog(Id page, QWidget *parent = Q_NULLPTR);
 

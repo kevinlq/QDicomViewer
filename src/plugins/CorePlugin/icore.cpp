@@ -304,10 +304,12 @@ ICore *ICore::instance()
 
 bool ICore::isNewItemDialogRunning()
 {
+    return false;
 }
 
 QWidget *ICore::newItemDialog()
 {
+    return Q_NULLPTR;
 }
 
 ICore::ICore(MainWindow *mainwindow)
@@ -334,6 +336,11 @@ void ICore::showNewItemDialog(const QString &title,
                               const QString &defaultLocation,
                               const QVariantMap &extraVariables)
 {
+    Q_UNUSED(title);
+    Q_UNUSED(factories);
+    Q_UNUSED(defaultLocation);
+    Q_UNUSED(extraVariables);
+
     QTC_ASSERT(!isNewItemDialogRunning(), return);
 
     updateNewItemDialogState();
@@ -341,6 +348,10 @@ void ICore::showNewItemDialog(const QString &title,
 
 bool ICore::showOptionsDialog(const Id page, QWidget *parent)
 {
+    Q_UNUSED(page);
+    Q_UNUSED(parent);
+
+    return true;
 }
 
 QString ICore::msgShowOptionsDialog()
@@ -375,10 +386,12 @@ QSettings *ICore::settings(QSettings::Scope scope)
 SettingsDatabase *ICore::settingsDatabase()
 {
     //return m_mainwindow->settingsDatabase();
+    return Q_NULLPTR;
 }
 
 QPrinter *ICore::printer()
 {
+    return Q_NULLPTR;
 }
 
 QString ICore::userInterfaceLanguage()
@@ -530,6 +543,8 @@ void ICore::registerWindow(QWidget *window, const Context &context)
 
 void ICore::openFiles(const QStringList &arguments, ICore::OpenFilesFlags flags)
 {
+    Q_UNUSED(arguments);
+    Q_UNUSED(flags);
     //m_mainwindow->openFiles(arguments, flags);
 }
 
@@ -546,6 +561,7 @@ void ICore::openFiles(const QStringList &arguments, ICore::OpenFilesFlags flags)
 */
 void ICore::addPreCloseListener(const std::function<bool ()> &listener)
 {
+    Q_UNUSED(listener);
     //m_mainwindow->addPreCloseListener(listener);
 }
 

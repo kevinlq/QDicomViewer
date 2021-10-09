@@ -1,9 +1,11 @@
 #pragma once
 
+QT_BEGIN_NAMESPACE
 #include <QtGlobal>
 #include <QDataStream>
 #include <QSize>
 #include <QColor>
+QT_END_NAMESPACE
 
 namespace Core {
 namespace Constants {
@@ -24,7 +26,7 @@ const int TOOL_BUTTON_WIDTH          = 50;
 const int TOOL_BUTTON_HEIGHT         = 35;
 const int STATUS_PANEL_HEIGHT        = 18;
 
-const char DROP_LIST_PANEL_KEY[]    = "qradiant/listPanelMimedata";
+const char DROP_LIST_PANEL_KEY[]    = "qdcmView/listPanelMimedata";
 const char DROP_EXTEND_KEY[]        = "text/uri-list";
 const char DROP_EXTEND_FILTER[]     = ".dcm|.pkg";
 const char DICOM_FILTER[]           = "*.dcm|*.pkg";
