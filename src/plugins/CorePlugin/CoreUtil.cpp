@@ -64,10 +64,12 @@ bool CoreUtil::isValidDicomFile(const QString &strFilePath)
 {
     QFileInfo info(strFilePath);
 
-    return isValidDicomFile(info);
+    QStringList lsFilter = QString(Constants::DROP_EXTEND_FILTER).split("|");
+
+    return isValidDicomFile(info, lsFilter);
 }
 
-bool CoreUtil::isValidDicomFile(const QFileInfo &fileInfo)
+bool CoreUtil::isValidDicomFile(const QFileInfo &fileInfo,const QStringList &filters)
 {
     if (fileInfo.isDir())
     {
@@ -75,7 +77,7 @@ bool CoreUtil::isValidDicomFile(const QFileInfo &fileInfo)
     }
 
     QString strFileName = fileInfo.fileName();
-    QStringList lsFilter = QString(Constants::DROP_EXTEND_FILTER).split("|");
+    QStringList lsFilter = filters;
 
     if (lsFilter.isEmpty())
     {
@@ -140,7 +142,7 @@ bool CoreUtil::getFile(const QString &strFilePath, const QStringList &filters, Q
         }
         else
         {
-            if (isValidDicomFile(fileInfo))
+            if (isValidDicomFile(fileInfo, filters))
             {
                lsFileInfo.push_back(fileInfo);
             }
@@ -163,7 +165,7 @@ bool CoreUtil::getDicomFiles(const QVariantList &lsFiles,QList<QFileInfo> &lsFil
 
         if (fileInfo.isFile())
         {
-            if (isValidDicomFile(fileInfo))
+            if (isValidDicomFile(fileInfo, filters))
             {
                 lsFileInfos.push_back(fileInfo);
             }
@@ -175,6 +177,21 @@ bool CoreUtil::getDicomFiles(const QVariantList &lsFiles,QList<QFileInfo> &lsFil
     }
 
     return true;
+}
+
+QStringList CoreUtil::getFiles(bool bFolder, const QStringList &filters)
+{
+    QFileDialog fileDialog;
+    fileDialog.setNameFilters(filters);
+    fileDialog.setViewMode(QFileDialog::Detail);
+    fileDialog.setFileMode(bFolder ? QFileDialog::Directory: QFileDialog::ExistingFiles);
+    fileDialog.setWindowTitle(QObject::tr("select file or folder"));
+
+    QStringList fileNames;
+    if (fileDialog.exec())
+        fileNames = fileDialog.selectedFiles();
+
+    return fileNames;
 }
 
 QByteArray CoreUtil::listItemDataToBuffer(ListItemData *pData)

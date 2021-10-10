@@ -266,9 +266,9 @@ void MainWindow::restoreWindowState()
     settings->beginGroup(QLatin1String(settingsGroup));
     if (!restoreGeometry(settings->value(QLatin1String(windowGeometryKey)).toByteArray()))
     {
-        //resize(1260, 700); // size without window decoration
+        resize(900, 640); // size without window decoration
     }
-    //restoreState(settings->value(QLatin1String(windowStateKey)).toByteArray());
+    restoreState(settings->value(QLatin1String(windowStateKey)).toByteArray());
     settings->endGroup();
 
     this->show();
@@ -589,18 +589,34 @@ void MainWindow::showSplitPanel()
 
 void MainWindow::openDcmFolder()
 {
+    QStringList filters;
+    QStringList fileNames = CoreUtil::getFiles(true, filters);
+
+    qDebug() <<"fileNames:" << fileNames;
 }
 
 void MainWindow::openDcmFile()
 {
+    QStringList filters = {"*.dcm"};
+    QStringList fileNames = CoreUtil::getFiles(false, filters);
+
+    qDebug() <<"fileNames:" << fileNames;
 }
 
 void MainWindow::openDcmZipFile()
 {
+    QStringList filters = {"*.zip"};
+    QStringList fileNames = CoreUtil::getFiles(false, filters);
+
+    qDebug() <<"fileNames:" << fileNames;
 }
 
 void MainWindow::openDcmPKGFile()
 {
+    QStringList filters = {"*.pkg"};
+    QStringList fileNames = CoreUtil::getFiles(false, filters);
+
+    qDebug() <<"fileNames:" << fileNames;
 }
 
 bool MainWindow::showOptionsDialog(Id page, QWidget *parent)

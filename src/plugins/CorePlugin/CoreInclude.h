@@ -32,6 +32,7 @@
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
+#include <QFileDialog>
 #include <QUrl>
 #include <QBuffer>
 #include <QImage>

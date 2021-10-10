@@ -16,11 +16,13 @@ public:
 
     static bool isValidFile(const QUrl &url, bool bCheckFile, const QString &strFilter);
     static bool isValidDicomFile(const QString &strFilePath);
-    static bool isValidDicomFile(const QFileInfo &fileInfo);
+    static bool isValidDicomFile(const QFileInfo &fileInfo, const QStringList &filters);
     static bool parseFileFromUrl(const QList<QUrl> &lsUrl, QVariantList &lsFile);
 
     static bool getFile(const QString& strFilePath, const QStringList &filters, QList<QFileInfo> &lsFileInfo);
     static bool getDicomFiles(const QVariantList &lsFiles, QList<QFileInfo> &lsFileInfo);
+
+    static QStringList getFiles(bool bFolder,const QStringList &filters);
 
     static QByteArray listItemDataToBuffer(ListItemData*pData);
     static ListItemData* listItemDataFromBuffer(QByteArray &buffer);
